@@ -1,0 +1,44 @@
+.dialog-content {
+    position: relative;
+    width: 100%;
+    max-width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white; /* Ensure image visibility */
+    overflow: hidden;
+    padding: 1rem;
+  }
+  
+  .dialog-image {
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain; /* Ensure image fits within container */
+  }
+  
+  mat-icon{
+    top: 0;
+    right: 0;
+    color: red;
+    font-size: 1.5rem;
+    position: absolute;
+    cursor: pointer;
+  }
+  
+  /* Media query for smaller screens */
+  @media (max-width: 600px) {
+    mat-icon {
+      font-size: 1rem; /* Smaller icon size */
+    }
+  }
+  
+  /* Media query for very small screens */
+  @media (max-width: 400px) {
+    mat-icon {
+      font-size: 0.8rem; /* Even smaller icon size */
+      top: 1px;
+      right: -10px;
+    }
+  }
+  

@@ -1,0 +1,217 @@
+{
+  "sections": [
+    {
+      "section_name": "Product Media",
+      "fields": [
+        {
+          "field_display_name": "Product Images",
+          "field_internal_name": "product_images",
+          "control_type": "file_upload",
+          "options": [],
+          "isRequired": true,
+          "isDisabled": false,
+          "field_value": "",
+          "field_default_value": "",
+          "isDisableOnEdit": false,
+          "allowed_file_types": ["jpg", "png", "jpeg"],
+          "multiple": true,
+          "control_style": "col-12",
+          "DependentFields": [],
+          "IncludeOnForm": 1,
+          "Chips_Array": []
+        }
+      ]
+    },
+    {
+      "section_name": "General Information",
+      "fields": [
+        {
+          "field_display_name": "Product Name",
+          "field_internal_name": "product_name",
+          "control_type": "input",
+          "options": [],
+          "isRequired": true,
+          "isDisabled": false,
+          "field_value": "",
+          "field_default_value": "",
+          "isDisableOnEdit": false,
+          "placeholder": "Enter product name",
+          "control_style": "col-12",
+          "DependentFields": [],
+          "IncludeOnForm": 1,
+          "Chips_Array": []
+        },
+        {
+          "field_display_name": "Product Category",
+          "field_internal_name": "Category",
+          "control_type": "input",
+          "options": [],
+          "isRequired": true,
+          "isDisabled": false,
+          "field_value": "",
+          "field_default_value": "",
+          "isDisableOnEdit": false,
+          "placeholder": "Enter product category",
+          "control_style": "col-12",
+          "DependentFields": [],
+          "IncludeOnForm": 1,
+          "Chips_Array": []
+        },
+        {
+          "field_display_name": "Sub Category",
+          "field_internal_name": "sub_category",
+          "control_type": "input",
+          "options": [],
+          "isRequired": true,
+          "isDisabled": false,
+          "field_value": "",
+          "field_default_value": "",
+          "isDisableOnEdit": false,
+          "placeholder": "Enter product sub category",
+          "control_style": "col-12",
+          "DependentFields": [],
+          "IncludeOnForm": 1,
+          "Chips_Array": []
+        },
+        {
+          "field_display_name": "Select Size",
+          "field_internal_name": "sizebtn",
+          "control_type": "toggle",
+          "options": [],
+          "isRequired": false,
+          "isDisabled": false,
+          "field_value": false,
+          "field_default_value": "",
+          "isDisableOnEdit": false,
+          "placeholder": "Select Size",
+          "control_style": "col-6",
+          "DependentFields": [
+            {
+              "Dependent_Field_Name": "size",
+              "Field_Internal_Name": "sizebtn"
+            }
+          ],
+          "IncludeOnForm": 1,
+          "Chips_Array": []
+        },
+        {
+          "field_display_name": "Select Color",
+          "field_internal_name": "colorbtn",
+          "control_type": "toggle",
+          "options": [],
+          "isRequired": false,
+          "isDisabled": false,
+          "field_value": false,
+          "field_default_value": "",
+          "isDisableOnEdit": false,
+          "placeholder": "Select Color",
+          "control_style": "col-6",
+          "DependentFields": [
+            {
+              "Dependent_Field_Name": "color",
+              "Field_Internal_Name": "colorbtn"
+            }
+          ],
+          "IncludeOnForm": 1,
+          "Chips_Array": []
+        },
+        {
+          "field_display_name": "Size*",
+          "field_internal_name": "size",
+          "control_type": "chips",
+          "options": [],
+          "isRequired": false,
+          "isDisabled": false,
+          "field_value": "",
+          "field_default_value": "",
+          "isDisableOnEdit": false,
+          "placeholder": "Enter Size",
+          "control_style": "col-12",
+          "DependentFields": [],
+          "IncludeOnForm": 0,
+          "Chips_Array": []
+        },
+        {
+          "field_display_name": "Color*",
+          "field_internal_name": "color",
+          "control_type": "chips",
+          "options": [],
+          "isRequired": false,
+          "isDisabled": false,
+          "field_value": "",
+          "field_default_value": "",
+          "isDisableOnEdit": false,
+          "placeholder": "Enter Color",
+          "control_style": "col-12",
+          "DependentFields": [],
+          "IncludeOnForm": 0,
+          "Chips_Array": []
+        },
+        {
+          "field_display_name": "Description",
+          "field_internal_name": "description",
+          "control_type": "textarea",
+          "options": [],
+          "isRequired": true,
+          "isDisabled": false,
+          "field_value": "",
+          "field_default_value": "",
+          "isDisableOnEdit": false,
+          "placeholder": "Enter product description",
+          "control_style": "col-12",
+          "DependentFields": [],
+          "IncludeOnForm": 1,
+          "Chips_Array": []
+        },
+        {
+          "field_display_name": "Specification",
+          "field_internal_name": "specification",
+          "control_type": "textarea",
+          "options": [],
+          "isRequired": true,
+          "isDisabled": false,
+          "field_value": "",
+          "field_default_value": "",
+          "isDisableOnEdit": false,
+          "placeholder": "Enter product description",
+          "control_style": "col-12",
+          "DependentFields": [],
+          "IncludeOnForm": 1,
+          "Chips_Array": []
+        },
+        {
+          "field_display_name": "Minimum Quantity",
+          "field_internal_name": "min_quantity",
+          "control_type": "input",
+          "options": [],
+          "isRequired": true,
+          "isDisabled": false,
+          "field_value": "",
+          "field_default_value": "",
+          "isDisableOnEdit": false,
+          "placeholder": "Enter product price",
+          "control_style": "col-12",
+          "DependentFields": [],
+          "IncludeOnForm": 1,
+          "Chips_Array": []
+        },
+        {
+          "field_display_name": "Price",
+          "field_internal_name": "price",
+          "control_type": "input",
+          "options": [],
+          "isRequired": true,
+          "isDisabled": false,
+          "field_value": "",
+          "field_default_value": "",
+          "isDisableOnEdit": false,
+          "placeholder": "Enter product price",
+          "control_style": "col-12",
+          "DependentFields": [],
+          "IncludeOnForm": 1,
+          "Chips_Array": []
+        }
+      ]
+    }
+  ]
+}

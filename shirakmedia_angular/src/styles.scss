@@ -1,0 +1,26 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* to give border to mat-form-field */
+.mat-mdc-text-field-wrapper {
+    border-radius: 10px !important;
+    border: 1px solid #e9e9e9 !important;
+}
+
+/* to remove border-bottom of mat-form-field */
+.mdc-line-ripple::before, .mdc-line-ripple::after {
+    border-bottom-style: none !important;
+}
+
+mat-form-field {
+    width: 100%;
+}
+
+.custom-dialog-container .mat-dialog-container {
+    padding: 0;
+    overflow: hidden;
+    border-radius: 10px !important;
+  }
+  

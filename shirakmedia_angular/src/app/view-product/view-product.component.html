@@ -1,0 +1,156 @@
+<div class="container">
+
+  <div class="child-container">
+
+    <div class="product-page" *ngIf="selectedProduct">
+      <div class="product-images">
+        <img [src]="selectedImage" alt="Main Shoe" class="main-img">
+        <div class="thumbnail-images">
+          <!-- <img *ngFor="let image of selectedProduct.images" [src]="image" (click)="changeImage(image)"> -->
+          <img *ngFor="let image of selectedProduct['product_images']" [src]="image.url" (click)="changeImage(image)">
+        </div>
+      </div>
+
+      <div class="product-details">
+        <div>
+          <h1>{{ selectedProduct.title }}</h1>
+          <div class="rating-container" *ngIf="selectedProduct.rating !== null && selectedProduct.rating !== undefined">
+            Ratings ({{selectedProduct.rating}})
+            <mat-icon *ngFor="let star of getStars(selectedProduct.rating); let i = index">
+              {{ star }}
+            </mat-icon>
+          </div>
+          <p class="price">Price: ₹{{ selectedProduct.price }}</p>
+          <!-- <div class="color-selection">
+            <p>Color:</p>
+            <img *ngFor="let color of selectedProduct.colors" [src]="color">
+          </div> -->
+          <div class="product-options">
+            <div class="colors" *ngIf="selectedProduct.colors">
+              <h3>Colors</h3>
+              <div class="color-options" style="display: flex;">
+                <!-- <img *ngFor="let color of selectedProduct.colors" [src]="color" alt="Color Option"> -->
+                <div *ngFor="let color of selectedProduct.colors" alt="Color Option"
+                  [ngStyle]="{'background': color.name}">
+                </div>
+              </div>
+              <div class="sizes" *ngIf="selectedProduct.sizes">
+                <h3 style="margin: 16px 0px;">Sizes</h3>
+                <div class="size-options">
+                  <span *ngFor="let size of selectedProduct.sizes">{{ size.name }}</span>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="size-selection">
+            <p>Size:</p>
+            <button mat-button *ngFor="let size of selectedProduct.sizes">{{ size }}</button>
+          </div> -->
+            <div class="action-buttons">
+              <button mat-raised-button color="primary" class="btn" (click)="addToCart(selectedProduct)">Add to
+                cart</button>
+              <button mat-raised-button color="accent" class="btn" (click)="onBuyNowClick(selectedProduct, true)">Buy
+                Now</button>
+              <!-- <button mat-raised-button color="accent" class="btn-fav">
+              <mat-icon style="margin: 0; color: black;">favorite_border</mat-icon>
+            </button> -->
+            </div>
+          </div>
+
+          <!-- Rating Summary Section Above Tabs -->
+          <!-- <div class="rating-summary">
+          <h3>Rating Summary</h3>
+          <div class="rating-bar" *ngFor="let rating of [5, 4, 3, 2, 1]">
+            <div class="rating-label">{{ rating }}</div>
+            <div class="rating-fill" [style.width.%]="getRatingPercentage(rating)">
+            </div>
+            <div class="rating-count">{{ getRatingCount(rating) }} users</div>
+          </div>
+        </div> -->
+
+          <div class="reviews">
+
+            <!-- Tabs for Details, Reviews, and Discussion -->
+            <mat-tab-group class="tabs">
+
+              <mat-tab label="Details">
+                <div class="product-details">
+                  <h2>Description</h2>
+                  <!-- <p>{{ productDetails.details.description }}</p> -->
+                  <p>{{ selectedProduct.description }}</p>
+
+                  <h2>Specifications</h2>
+                  <!-- <ul>
+                  <li *ngFor="let key of getSpecificationKeys()">
+                    <strong>{{ key }}:</strong> {{ productDetails.details.specifications[key] }}
+                  </li>
+                </ul> -->
+                  <p>{{ selectedProduct.specification }}</p>
+
+                  <!-- <h2>Features</h2>
+                <ul>
+                  <li *ngFor="let feature of productDetails.details.features">
+                    {{ feature }}
+                  </li>
+                </ul> -->
+                </div>
+              </mat-tab>
+
+              <mat-tab label="Reviews">
+                <div class="tab-content">
+
+                  <form [formGroup]="reviewForm" (ngSubmit)="addReview()">
+                    <!-- Star Rating Selection -->
+                    <div class="star-rating-selection">
+                      <mat-icon *ngFor="let star of [1, 2, 3, 4, 5]; let i = index" (click)="setRating(i + 1)"
+                        [class.filled]="i < reviewForm.value.rating"
+                        [class.empty]="i >= reviewForm.value.rating">star</mat-icon>
+                    </div>
+
+                    <!-- Static Message -->
+                    <div class="static-message">
+                      <em>You can give a star rating by clicking on the stars above.</em>
+                    </div>
+
+                    <mat-form-field appearance="fill">
+                      <mat-label>Your Review</mat-label>
+                      <textarea matInput formControlName="comment"></textarea>
+                      <mat-icon matSuffix (click)="addReview()" class="send-icon">send</mat-icon>
+                    </mat-form-field>
+
+                  </form>
+
+                  <!-- Review Input Form -->
+                  <!-- <form [formGroup]="reviewForm" (ngSubmit)="addReview()">
+                  <mat-form-field appearance="fill">
+                    <mat-label>Your Review</mat-label>
+                    <textarea matInput formControlName="comment"></textarea>
+                    <mat-icon matSuffix (click)="addReview()" class="send-icon">send</mat-icon>
+                  </mat-form-field>
+                </form> -->
+                  <div *ngFor="let review of selectedProduct.reviews" class="review">
+                    <mat-card class="review-card">
+                      <mat-card-header>
+                        <!-- <mat-card-title>{{ review.username }} ({{ review.date }})</mat-card-title> -->
+                        <!-- <mat-card-subtitle>{{ review.date }}</mat-card-subtitle> -->
+                        <mat-card-subtitle>{{ review.username }} ({{ review.date }})</mat-card-subtitle>
+                      </mat-card-header>
+                      <mat-card-content style="padding: 0.5rem;">
+                        <!-- Star rating display -->
+                        <div class="star-rating">
+                          <mat-icon *ngFor="let _ of getStars(review.rating)">star</mat-icon>
+                          <mat-icon *ngFor="let _ of getEmptyStars(review.rating)">star_border</mat-icon>
+                        </div>
+                        <p style="margin-left: 0.3rem;">{{ review.comment }}</p>
+                      </mat-card-content>
+                    </mat-card>
+                  </div>
+                </div>
+              </mat-tab>
+
+            </mat-tab-group>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>

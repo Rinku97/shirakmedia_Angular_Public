@@ -1,0 +1,102 @@
+<mat-toolbar class="navbar">
+  <mat-toolbar-row>
+    <!-- Hamburger Menu Button -->
+    <button mat-icon-button (click)="sidenav.toggle()" class="sidenav-toggle">
+      <mat-icon>menu</mat-icon>
+    </button>
+
+    <!-- Left Side: Menu Items -->
+    <div class="navbar-menu">
+      <button mat-button (click)="onMenuClick('home')">Home</button>
+      <button *ngIf="showCategoryOptions" mat-button (click)="onMenuClick('category')">Category</button>
+      <button mat-button (click)="onMenuClick('add')">Add Product</button>
+    </div>
+
+    <!-- Right Side: Icons -->
+    <span class="spacer"></span>
+    <div class="navbar-icons">
+      <button mat-icon-button (click)="onMenuClick('cart')">
+        <mat-icon aria-hidden="false" [matBadge]="!productLength ? '' : productLength">shopping_cart</mat-icon>
+      </button>
+      <button mat-icon-button>
+        <mat-icon>account_circle</mat-icon>
+      </button>
+    </div>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<!-- Forr Mobile Devices -->
+<main class="main-content">
+
+  <mat-drawer-container class="example-container" [ngStyle]="{'height': containerHeight}">
+    <mat-drawer #sidenav mode="push" class="example-sidenav" (opened)="onDrawerOpened()" (closed)="onDrawerClosed()">
+      <mat-nav-list>
+        <a mat-list-item (click)="onMenuClick('home')">Home</a>
+        <a *ngIf="showCategoryOptions" mat-list-item (click)="onMobileMenuClick('category')">Category</a>
+        <a mat-list-item (click)="onMenuClick('add')">Add Product</a>
+        <!-- <mat-divider></mat-divider>
+        <a mat-list-item (click)="onMobileMenuClick('cart')">
+          <mat-icon>shopping_cart</mat-icon> Cart
+        </a>
+        <a mat-list-item (click)="onMenuClick('home')">
+          <mat-icon>favorite</mat-icon> Wishlist
+        </a>
+        <a mat-list-item (click)="onMenuClick('home')">
+          <mat-icon>account_circle</mat-icon> Profile
+        </a> -->
+      </mat-nav-list>
+    </mat-drawer>
+  </mat-drawer-container>
+</main>
+
+
+<!-- Main content goes here -->
+<div>
+  <router-outlet></router-outlet>
+</div>
+
+<!-- For Cart Side Nav -->
+<div class="cart-sidenav" [hidden]="!openCartSideNav" [ngClass]="{'show': openCartSideNav, 'hide': !openCartSideNav}">
+  <div>
+    <!-- <mat-icon style="color: #ababab;font-size: 20px;cursor: pointer;" (click)="onCloseButton()">close</mat-icon> -->
+    <button style="float: right;" mat-button (click)="onCloseButton()">Close </button>
+  </div>
+  <h2 style="padding: 2rem 1rem 0;margin: 0;">Cart</h2>
+  <hr>
+  <h4 style="padding: 0 1rem;margin: 0;" *ngIf="!productLength">Your Cart is Empty.<br>
+
+    Add items to your cart to get started!</h4>
+  <div *ngIf="productLength" style="text-align: end;padding: 1rem;">
+    <h4 style="margin: 0;"> Subtotal ({{productLength}} items):₹{{roundedTotalPrice}}</h4>
+    <button mat-raised-button color="accent" class="btn" (click)="onCheckOutAll()">Checkout all</button>
+  </div>
+
+  <div class="product-list">
+    <div class="product-grid">
+      <mat-card class="product-card" *ngFor="let product of cartProducts">
+        <img mat-card-image [src]="product.image" alt="{{product.title}}" (click)="onProductClick(product)">
+        <mat-card-content>
+          <h3>{{product.title}}</h3>
+          <div>
+            <h3 style="margin: 0;">Price: ₹{{product.price}}</h3>
+          </div>
+          <div class="rating-container" *ngIf="product.rating !== null && product.rating !== undefined">
+            Ratings ({{product.rating}})
+            <mat-icon *ngFor="let star of getStars(product.rating); let i = index">
+              {{ star }}
+            </mat-icon>
+          </div>
+        </mat-card-content>
+        <mat-card-actions class="action-buttons">
+          <!-- <div class="action-buttons"> -->
+          <button mat-raised-button color="accent" class="btn" (click)="onBuyNowClick(product, true)">Buy Now</button>
+          <mat-icon mat-raised-button color="warn" (click)="removeFromCart(product)">delete</mat-icon>
+          <!-- <button mat-raised-button color="accent" class="btn-fav">
+              <mat-icon style="margin: 0; color: black;">favorite_border</mat-icon>
+            </button> -->
+          <!-- </div> -->
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+</div>

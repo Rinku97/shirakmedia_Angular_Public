@@ -1,0 +1,281 @@
+/* Ensure the navbar is fixed at the top */
+.navbar {
+    background-color: #607d8b; 
+    color: #ffffff; 
+    position: fixed; /* Fix the navbar to the top */
+    top: 0;
+    left: 0;
+    width: 100%; 
+    z-index: 1000; /* Ensure it stays on top of other content */
+    height: 64px; 
+  }
+  
+  /* Adjust the content below the navbar */
+  .main-content {
+    margin-top: 64px; /* Ensure this matches the height of the navbar */
+  }
+  
+  /* Ensure the navbar menu and icons are displayed properly */
+  .navbar-menu {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .navbar-icons {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .spacer {
+    flex: 1 1 auto;
+  }
+  
+  button {
+    color: inherit;
+  }
+  
+  mat-icon {
+    font-size: 24px; 
+  }
+  
+  .sidenav-container {
+    display: none; /* Hide sidenav container on larger screens */
+  }
+  
+  .sidenav {
+    width: 250px;
+  }
+  
+  .sidenav-toggle {
+    display: none; /* Hide hamburger menu button on larger screens */
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 600px) {
+    .navbar-menu {
+      display: none; /* Hide navbar menu items on small screens */
+    }
+  
+    // .navbar-icons {
+    //   // display: none; /* Hide navbar icons on small screens */
+    // }
+  
+    .sidenav-container {
+      display: block; /* Show sidenav container on small screens */
+      height: 100%;
+      position: relative;
+    }
+  
+    .sidenav-toggle {
+      display: block; /* Show hamburger menu button on small screens */
+    }
+
+    .cart-sidenav{
+      width: 70% !important; 
+    }
+  
+    .cart-sidenav h2 {
+      font-size: 1.5em; 
+    }
+  }
+
+/* Small devices (tablets, 600px to 768px) */
+@media (min-width: 601px) and (max-width: 768px) {
+  /* Styles go here */
+  .cart-sidenav {
+    width: 50% !important; 
+  }
+}
+
+/* Medium devices (small laptops, 769px to 992px) */
+@media (min-width: 769px) and (max-width: 992px) {
+  /* Styles go here */
+  .cart-sidenav {
+    width: 40% !important; 
+  }
+}
+
+/* Large devices (desktops, 993px to 1200px) */
+@media (min-width: 993px) and (max-width: 1200px) {
+  /* Styles go here */
+  .cart-sidenav {
+    width: 30% !important; 
+  }
+}
+
+/* Extra large devices (large desktops, 1201px and up) */
+@media (min-width: 1201px) {
+  /* Styles go here */
+  .cart-sidenav {
+    width: 20% !important; 
+  }
+}
+
+  
+  .example-sidenav-content {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+
+.example-container {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  transition: height 0.5s ease; /* Smooth transition for height change */
+  position: fixed;
+  z-index: 99999;
+}
+
+.example-sidenav {
+    width: 250px;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.cart-sidenav {
+  top: 64px;
+  right: 0;
+  height: 100%;
+  z-index: 9999;
+  position: fixed;
+  min-width: 20%;
+  background: #fffdfd;
+  border: 1px solid #e7e7e7;
+}
+
+.cart-sidenav.show {
+  animation: slideIn 300ms ease-in-out forwards;
+}
+
+.cart-sidenav.hide {
+  animation: slideOut 300ms ease-in-out forwards;
+}
+
+.cart-products{
+  padding: 1rem;
+  max-height: 100%; 
+  overflow-y: auto; /* Enables vertical scrolling if needed */
+}
+
+/* WebKit browsers */
+.cart-products::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
+}
+
+/* Firefox */
+.cart-products {
+  scrollbar-width: none;
+}
+
+/* IE and Edge */
+.cart-products {
+  -ms-overflow-style: none;
+}
+
+
+
+
+/* Cart Products */
+
+.product-list {
+  // padding: 1rem 9rem;
+  padding: 1rem;
+  height: calc(100vh - 88px); /* Adjust based on the height of the filter container */
+  overflow: auto;
+}
+
+/* WebKit browsers */
+.product-list::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
+}
+
+/* Firefox */
+.product-list {
+  scrollbar-width: none;
+}
+
+/* IE and Edge */
+.product-list {
+  -ms-overflow-style: none;
+}
+
+.product-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  // margin-bottom: 5rem;
+  margin-bottom: 15rem;
+  justify-content: space-evenly;
+}
+
+.product-card {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  cursor: pointer;
+  border-radius: 15px;
+}
+
+.product-card img {
+  width: 100%; /* Full width of the container */
+  height: 200px; /* Maintain aspect ratio */
+  display: block; /* Removes extra space below the image */
+  object-fit: contain; /* Ensure the entire image is visible */
+}
+
+.product-card mat-card-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.rating-container {
+  gap: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  padding: 1rem 0;
+  flex-wrap: wrap;
+}
+
+.rating-container mat-icon {
+  color: #ffd700; /* Gold color for stars */
+}
+
+.action-buttons {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+  align-items: center;
+}
+
+.btn{
+  background-color: black !important;
+  white-space:nowrap;
+}
+

@@ -1,0 +1,36 @@
+.poup-container{
+    min-height: 160px;
+    min-width: 300px;
+    overflow: hidden;
+    padding: 10px;
+}
+
+mat-dialog-title {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+  }
+  
+  mat-icon {
+    margin-right: 8px;
+  }
+  
+  mat-dialog-content {
+    margin: 20px 0;
+  }
+  
+  mat-dialog-actions {
+    text-align: right;
+  }
+
+  .msg-style{
+    text-align:center;
+    word-break: break-word;
+  }
+
+  .btns{
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+  

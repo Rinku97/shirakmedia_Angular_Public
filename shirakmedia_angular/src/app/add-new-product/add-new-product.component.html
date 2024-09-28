@@ -1,0 +1,236 @@
+
+<!-- <div class="btns">
+    <button class="add-btn" mat-raised-button color="primary" (click)="submitForm()">Add Product</button>
+    <button class="add-btn" mat-raised-button color="primary" (click)="getAllFiles()">Get All Files</button>
+</div> -->
+
+<div class="container" >
+
+    <div class="left-card-parent">
+        <div class="btns">
+            <button class="add-btn" mat-raised-button color="primary" (click)="submitForm()">Add Product</button>
+            <!-- <button class="add-btn" mat-raised-button color="primary" (click)="getAllFiles()">Get All Files</button> -->
+        </div>
+
+        <mat-card *ngFor="let section of formSections" class="box">
+            <mat-card-header>
+                <mat-card-title>{{ section.section_name }}</mat-card-title>
+            </mat-card-header>
+            <!-- Button to trigger file input click -->
+            <div *ngIf="section.section_name == 'Product Media'" style="padding: 16px;">
+                <div class="upload-btn">
+                    <label class="upload-label" (click)="toggleBrowseFile(fileInput)">
+                        <mat-icon>cloud_upload</mat-icon>
+                        <span>Add Images</span>
+                    </label>
+                </div>
+                <!-- <div>section.section_name</div> -->
+                <mat-label>Uploaded Images</mat-label>
+            </div>
+            <mat-card-content class="card-content">
+                <ng-container *ngTemplateOutlet="cardContent; context:{section:section} ";></ng-container>
+            </mat-card-content>
+        </mat-card>
+
+    </div>
+
+    <!-- <div class="right-card-parent">
+
+        <mat-card *ngFor="let section of rightSections" class="box">
+            <mat-card-header>
+                <mat-card-title>{{ section.section_name }}</mat-card-title>
+            </mat-card-header>
+            
+            <mat-card-content class="card-content">
+                <ng-container *ngTemplateOutlet="cardContent; context:{section:section} ";></ng-container>
+            </mat-card-content>
+        </mat-card>
+
+    </div> -->
+
+</div>
+
+<ng-template #cardContent let-section="section">
+
+    <form [formGroup]="productForm">
+        <ng-container *ngFor="let field of section.fields">
+            <ng-container [ngSwitch]="field.control_type">
+                
+                <!-- Input control type -->
+                <ng-container *ngSwitchCase="'input'">
+                    <mat-form-field class="full-width" appearance="fill" [class]="field.control_style" [ngClass]="{ 'hide': field.IncludeOnForm === 0 }">
+                        <mat-label>{{ field.field_display_name }}</mat-label>
+                        <input matInput
+                               formControlName="{{ field.field_internal_name }}"
+                               [attr.placeholder]="field.placeholder"
+                               [required]="field.isRequired"/>
+                        <mat-error *ngIf="productForm.get(field.field_internal_name).hasError('required')">
+                            {{ field.field_display_name }} is required
+                        </mat-error>
+                    </mat-form-field>
+                </ng-container>
+
+                <!-- Chips control type -->
+                <ng-container *ngSwitchCase="'chips'">
+                    <mat-form-field class="full-width" [ngClass]="{ 'hide': field.IncludeOnForm === 0 }">
+                        <mat-label [ngClass]="{ 'red-label': isFieldRequired(field) }">{{ field.field_display_name }}</mat-label>
+                        <mat-chip-grid #chipGrid>
+                            <mat-chip-row *ngFor="let chip of field.Chips_Array"
+                                          (removed)="removeChip(chip, field)"
+                                          [editable]="true"
+                                          [aria-description]="'Press enter to edit ' + chip.name">
+                                {{ chip.name }}
+                                <button matChipRemove [attr.aria-label]="'Remove ' + chip.name">
+                                    <mat-icon>cancel</mat-icon>
+                                </button>
+                            </mat-chip-row>
+                            <input placeholder="{{ field.placeholder || 'New item...'}}"
+                                   [matChipInputFor]="chipGrid"
+                                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                   [matChipInputAddOnBlur]="addOnBlur"
+                                   (matChipInputTokenEnd)="addChip($event, field)"
+                                   [required]="field.isRequired == 1"
+                                   />
+                        </mat-chip-grid>
+                    </mat-form-field>
+                    <mat-error *ngIf="isFieldRequired(field)" class="error-class">
+                        {{ getDisplayName(field) }} is required
+                    </mat-error>
+                </ng-container>
+                
+
+                <!-- Textarea control type -->
+                <ng-container *ngSwitchCase="'textarea'" >
+                    <mat-form-field class="full-width" appearance="fill" style="height: 15vh;" [class]="field.control_style">
+                        <mat-label>{{ field.field_display_name }}</mat-label>
+                        <textarea matInput
+                                  formControlName="{{ field.field_internal_name }}"
+                                  [attr.placeholder]="field.placeholder"
+                                  [required]="field.isRequired" style="min-height: 92px;"></textarea>
+                        <mat-error *ngIf="productForm.get(field.field_internal_name).hasError('required')">
+                            {{ field.field_display_name }} is required
+                        </mat-error>
+                    </mat-form-field>
+                </ng-container>
+
+                <!-- Dropdown control type -->
+                <ng-container *ngSwitchCase="'dropdown'" >
+                    <mat-form-field class="full-width" appearance="fill" [class]="field.control_style" [ngClass]="{ 'hide': field.IncludeOnForm === 0 }">
+                        <mat-label>{{ field.field_display_name }}</mat-label>
+                        <mat-select formControlName="{{ field.field_internal_name }}" [required]="field.isRequired">
+                            <mat-option *ngFor="let option of field.options" [value]="option.key">
+                                {{ option.value }}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="productForm.get(field.field_internal_name).hasError('required')">
+                            {{ field.field_display_name }} is required
+                        </mat-error>
+                    </mat-form-field>
+                </ng-container>
+
+                <!-- Date control type -->
+                <ng-container *ngSwitchCase="'date'">
+                    <mat-form-field class="full-width" appearance="fill" [class]="field.control_style" [ngClass]="{ 'hide': field.IncludeOnForm === 0 }">
+                        <mat-label>{{ field.field_display_name }}</mat-label>
+                        <input matInput formControlName="{{ field.field_internal_name }}" [required]="field.isRequired" [placeholder]="field.placeholder" [matDatepicker]="picker">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                        <mat-error *ngIf="productForm.get(field.field_internal_name).hasError('required')">
+                            {{ field.field_display_name }} is required
+                        </mat-error>
+                    </mat-form-field>
+                </ng-container>
+
+                <!-- Radio button control type -->
+                <ng-container *ngSwitchCase="'radio'">
+                    <div class="form-group" style="display: flex;gap: 0.5rem;padding: 0.5rem;" [ngClass]="{ 'hide': field.IncludeOnForm === 0 }">
+                            <input type="radio"
+                                formControlName="{{ field.field_internal_name }}" 
+                                (change)="onRadioChange($event, field)">
+                            <label [for]="field.field_display_name" style="margin-top: 3px;">{{ field.field_display_name }}</label>
+                        <div *ngIf="productForm.get(field.field_internal_name).hasError('required')">
+                            {{ field.field_display_name }} is required
+                        </div>
+                    </div>
+                </ng-container>
+
+                <!-- Toggle switch control type -->
+                <ng-container *ngSwitchCase="'toggle'">
+                    <section class="example-section" [ngClass]="{ 'hide': field.IncludeOnForm === 0 }">
+                        <mat-slide-toggle
+                            class="example-margin"
+                            formControlName="{{ field.field_internal_name }}" 
+                            (change)="onToggleChange($event, field)"
+                            [color]="color"
+                            [checked]="field.field_value">
+                            {{ field.field_display_name }}
+                        </mat-slide-toggle>
+                        <div *ngIf="productForm.get(field.field_internal_name).hasError('required')">
+                            {{ field.field_display_name }} is required
+                        </div>
+                    </section>
+                </ng-container>
+
+
+                <!-- File upload control type -->
+                <ng-container *ngSwitchCase="'file_upload'">
+
+                    <!-- <mat-label>{{ field.field_display_name }}</mat-label> -->
+                    <div class="file-upload-container" [ngClass]="{ 'hide': field.IncludeOnForm === 0 }">
+                        <input
+                            type="file"
+                            (change)="onFileChange($event, field, uploader)"
+                            style="display:none"
+                            #fileInput
+                            multiple
+                        />
+                        
+                        <!-- Progress bar showing progress of the file upload -->
+                        <!-- <mat-progress-bar 
+                            *ngIf="uploader.queue.length > 0 && uploader.progress != 100" 
+                            mode="determinate" 
+                            [value]="uploader.progress">
+                        </mat-progress-bar> -->
+                        
+                        <mat-grid-list cols="4" rowHeight="2:2" gutterSize="10" class="grid-container" [ngClass]="{'no-padding': !productImages.length}">
+
+                            <mat-grid-tile *ngFor="let slide of productImages; let i = index" class="grid-tile">
+                                <img class="img-preview" [src]="slide.url" [alt]="slide.name" />
+
+                                <img class="remove-btn" src="../../assets/Images/remove.png" (click)="removeImage(i)" />
+
+                                <img class="enlarge-btn" src="../../assets/Images/zoom-in.png" (click)="enlargeImage(i)"/>
+                                    <!-- <mat-icon class="remove-btn" (click)="removeImage(i)">indeterminate_check_box</mat-icon>
+                                    <mat-icon class="enlarge-btn" (click)="enlargeImage(i)">aspect_ration</mat-icon> -->
+                            </mat-grid-tile>
+
+                        </mat-grid-list>
+
+                        <div *ngIf="productImages.length == 0">No Files Uploaded</div>
+                          
+                    </div>
+                </ng-container>
+
+            </ng-container>
+        </ng-container>
+    </form>
+
+</ng-template>
+
+<!-- Loader HTML -->
+<div *ngIf="isLoading" class="loader-container">
+    <div class="loader"></div>
+  </div>
+  
+
+
+
+
+
+
+
+
+
+
+
+

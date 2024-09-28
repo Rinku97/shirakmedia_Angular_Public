@@ -1,0 +1,75 @@
+<div class="container">
+  <mat-card class="parent-card">
+    <mat-card class="child-card illustration-card showHide">
+      <img src="assets/Images/checkout.svg" alt="Illustration" class="illustration-img" />
+
+      <ng-container *ngTemplateOutlet="productDetails" ;></ng-container>
+
+    </mat-card>
+    <mat-card class="child-card form-card">
+      <div class="mobile-view">
+        <img src="assets/Images/checkout.svg" alt="Illustration" class="illustration-img" />
+
+        <ng-container *ngTemplateOutlet="productDetails" ;></ng-container>
+      </div>
+      <h2>Checkout</h2>
+      <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()" #formGroupDirective="ngForm">
+        <div class="form-grid">
+          <ng-container *ngFor="let field of formFields">
+            <mat-form-field *ngIf="field.type !== 'textarea'">
+              <mat-label>{{ field.label }}</mat-label>
+              <input matInput [formControlName]="field.name" [type]="field.type" />
+              <mat-error *ngIf="checkoutForm.get(field.name).hasError('required')">
+                {{ field.label }} is required
+              </mat-error>
+              <mat-error *ngIf="checkoutForm.get(field.name).hasError('email')">
+                Enter a valid email address
+              </mat-error>
+              <mat-error *ngIf="checkoutForm.get(field.name).hasError('pattern')">
+                Invalid phone number
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field *ngIf="field.type === 'textarea'">
+              <mat-label>{{ field.label }}</mat-label>
+              <textarea matInput [formControlName]="field.name"></textarea>
+            </mat-form-field>
+          </ng-container>
+        </div>
+        <button mat-raised-button type="submit" style="float: right;background: #607d8b;color: white;">Pay Now</button>
+        <!-- <button mat-fab >Pay Now</button> -->
+      </form>
+    </mat-card>
+  </mat-card>
+</div>
+
+<ng-template #productDetails>
+
+  <div class="table-container">
+    <h2>Product Details</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Product Image</th>
+          <th>Title</th>
+          <th>Category</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of products">
+          <td><img [src]="product.image" alt="Product Image" class="product-image" (mouseenter)="enlargeImage(product)">
+          </td>
+          <td><a (click)="onProductTitleClick(product)" class="title-link">{{ product.title }}</a></td>
+          <td>{{ product.category }}</td>
+          <td>{{ product.price }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="total">
+    <h4 style="margin: 0;"> Subtotal ({{products.length}} items):₹{{roundedTotalPrice}}</h4>
+    <!-- <h3>Total: </h3>
+        <h3>{{roundedTotalPrice}}</h3> -->
+  </div>
+
+</ng-template>
