@@ -7,6 +7,8 @@ import { Component } from '@angular/core';
 })
 export class AboutPageComponent {
 
+  // about us page
+
   phoneNumber:string = "+91 98999 00237";
   emailTo:string = "shirakmedia@gmail.com";
 
