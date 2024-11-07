@@ -9,7 +9,7 @@
     <div class="navbar-menu">
       <button mat-button (click)="onMenuClick('home')">Home</button>
       <button *ngIf="showCategoryOptions" mat-button (click)="onMenuClick('category')">Category</button>
-      <button mat-button (click)="onMenuClick('add')">Add Product</button>
+      <button mat-button (click)="onMenuClick('aboutus')">About Us</button>
     </div>
 
     <!-- Right Side: Icons -->
@@ -18,9 +18,11 @@
       <button mat-icon-button (click)="onMenuClick('cart')">
         <mat-icon aria-hidden="false" [matBadge]="!productLength ? '' : productLength">shopping_cart</mat-icon>
       </button>
-      <button mat-icon-button>
+      <!-- <button mat-icon-button>
         <mat-icon>account_circle</mat-icon>
-      </button>
+      </button> -->
+
+      <img src="../../assets/Images/shirakMediaLogo.jpeg" alt="Logo" class="navbar-logo">
     </div>
   </mat-toolbar-row>
 </mat-toolbar>
@@ -33,17 +35,7 @@
       <mat-nav-list>
         <a mat-list-item (click)="onMenuClick('home')">Home</a>
         <a *ngIf="showCategoryOptions" mat-list-item (click)="onMobileMenuClick('category')">Category</a>
-        <a mat-list-item (click)="onMenuClick('add')">Add Product</a>
-        <!-- <mat-divider></mat-divider>
-        <a mat-list-item (click)="onMobileMenuClick('cart')">
-          <mat-icon>shopping_cart</mat-icon> Cart
-        </a>
-        <a mat-list-item (click)="onMenuClick('home')">
-          <mat-icon>favorite</mat-icon> Wishlist
-        </a>
-        <a mat-list-item (click)="onMenuClick('home')">
-          <mat-icon>account_circle</mat-icon> Profile
-        </a> -->
+        <a mat-list-item (click)="onMenuClick('aboutus')">About Us</a>
       </mat-nav-list>
     </mat-drawer>
   </mat-drawer-container>
@@ -74,9 +66,9 @@
   <div class="product-list">
     <div class="product-grid">
       <mat-card class="product-card" *ngFor="let product of cartProducts">
-        <img mat-card-image [src]="product.image" alt="{{product.title}}" (click)="onProductClick(product)">
+        <img mat-card-image [src]="product.productImages[0].url" alt="{{product.product_name}}" (click)="onProductClick(product)">
         <mat-card-content>
-          <h3>{{product.title}}</h3>
+          <h3 class="text-container" [matTooltip]="product.product_name">{{product.product_name}}</h3>
           <div>
             <h3 style="margin: 0;">Price: ₹{{product.price}}</h3>
           </div>

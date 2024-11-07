@@ -17,8 +17,6 @@ export class ConfigService {
     private configSubject = new BehaviorSubject<AppConfig | null>(null);
     config$ = this.configSubject.asObservable();
 
-    private configUrl = 'assets/Json';
-
     constructor(private http: HttpClient) {
       // this.initializeConfig();
     }
@@ -50,18 +48,6 @@ export class ConfigService {
       const config = this.configSubject.value;
       return config ? config.apiUrl : null;
     }
-
-
-    // loadConfig() {
-    //   return this.http.get<AppConfig>('/assets/config/config.json').pipe(
-    //     tap(config => {
-          
-    //       console.log(config);
-    //       this.configSubject.next(config);
-
-    //     })
-    //   );
-    // }
 
     decrypt(textToDecrypt: string): string {
       let key = "bbC2H19lkVbQDfakxcrtNMQdd0FloLyw"; // length == 32
@@ -103,9 +89,5 @@ export class ConfigService {
           padding: CryptoJS.pad.Pkcs7,
       }).toString();
       return eValue;
-  }
-
-  getConfig(): Observable<any> {
-    return this.http.get<any>(`${this.configUrl}/product_form_config.json`);
   }
 }

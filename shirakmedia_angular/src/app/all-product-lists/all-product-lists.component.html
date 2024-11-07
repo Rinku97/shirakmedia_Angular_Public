@@ -51,9 +51,9 @@
     <div class="product-list">
       <div class="product-grid">
         <mat-card class="product-card" *ngFor="let product of paginatedProducts">
-          <img mat-card-image [src]="product.image" alt="{{product.title}}" (click)="onProductClick(product)">
+          <img mat-card-image [src]="product.productImages[0].url" alt="{{product.product_name}}" (click)="onProductClick(product)">
           <mat-card-content (click)="onProductClick(product)">
-            <h3>{{product.title}}</h3>
+            <h3 class="text-container" [matTooltip]="product.product_name">{{product.product_name}}</h3>
             <div>
               <h3 style="margin: 0;">Price: ₹{{product.price}}</h3>
             </div>
@@ -65,13 +65,8 @@
             </div>
           </mat-card-content>
           <mat-card-actions class="action-buttons">
-            <!-- <div class="action-buttons"> -->
                 <button mat-raised-button color="primary" class="btn" (click)="addToCart(product)">Add to cart</button>
                 <button mat-raised-button color="accent" class="btn" (click)="onBuyNowClick(product, true)">Buy Now</button>
-                <!-- <button mat-raised-button color="accent" class="btn-fav">
-                  <mat-icon style="margin: 0; color: black;">favorite_border</mat-icon>
-                </button> -->
-              <!-- </div> -->
           </mat-card-actions>
         </mat-card>
       </div>

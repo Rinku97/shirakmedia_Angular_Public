@@ -7,13 +7,13 @@
         <img [src]="selectedImage" alt="Main Shoe" class="main-img">
         <div class="thumbnail-images">
           <!-- <img *ngFor="let image of selectedProduct.images" [src]="image" (click)="changeImage(image)"> -->
-          <img *ngFor="let image of selectedProduct['product_images']" [src]="image.url" (click)="changeImage(image)">
+          <img *ngFor="let image of selectedProduct['productImages']" [src]="image.url" (click)="changeImage(image)">
         </div>
       </div>
 
       <div class="product-details">
         <div>
-          <h1>{{ selectedProduct.title }}</h1>
+          <h1>{{ selectedProduct.product_name }}</h1>
           <div class="rating-container" *ngIf="selectedProduct.rating !== null && selectedProduct.rating !== undefined">
             Ratings ({{selectedProduct.rating}})
             <mat-icon *ngFor="let star of getStars(selectedProduct.rating); let i = index">

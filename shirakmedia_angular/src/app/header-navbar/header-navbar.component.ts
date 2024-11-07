@@ -37,7 +37,7 @@ export class HeaderNavbarComponent {
       // Log the current route
       this.openCartSideNav = false;
       let url = event.urlAfterRedirects;
-      if (!url.includes('AddNew') && !url.includes('ViewProduct') && !url.includes('checkout')) {
+      if (!url.includes('AddNew') && !url.includes('ViewProduct') && !url.includes('checkout') && !url.includes('about-us')) {
         this.showCategoryOptions = true;
       } else {
         this.showCategoryOptions = false;
@@ -80,14 +80,13 @@ export class HeaderNavbarComponent {
       this.router.navigate(['']);
     }
 
-    if (menu == 'category') {
-      this.backSVC.setSelectedOption(menu);
+    if (menu == 'aboutus') {
+      this.openCartSideNav = false;
+      this.router.navigate(['about-us']);
     }
 
-
-    if (menu == 'add') {
-      this.openCartSideNav = false;
-      this.router.navigate(['/AddNew']);
+    if (menu == 'category') {
+      this.backSVC.setSelectedOption(menu);
     }
 
     this.closeDrawer();
@@ -107,10 +106,6 @@ export class HeaderNavbarComponent {
       this.getCartProducts();
     }
 
-    if (menu == 'add') {
-      this.router.navigate(['/AddNew']);
-    }
-
     this.closeDrawer();
   }
 
@@ -124,12 +119,13 @@ export class HeaderNavbarComponent {
   }
 
   calculateRoundedTotalPrice() {
-    // Calculate the total price by summing up the price of each item
-    const totalPrice = this.cartProducts.reduce((sum, item) => sum + item.price, 0);
+    const totalPrice = this.cartProducts.reduce((sum, item) => {
+        const price = parseFloat(item.price);
+        return sum + (isNaN(price) ? 0 : price); 
+    }, 0);
 
-    // Round the total price to the nearest whole number
     this.roundedTotalPrice = Math.round(totalPrice);
-  }
+}
 
   closeDrawer() {
     this.containerHeight = '0';
@@ -201,7 +197,7 @@ export class HeaderNavbarComponent {
     const dialogRef = this.dialog.open(ConfirmationAlertComponent, {
       // height: '300px',
       // width: '500px',
-      data: { message: `Are you sure want to delete "${product.title}" from the cart?` }
+      data: { message: `Are you sure want to delete "${product.product_name}" from the cart?` }
     });
 
     dialogRef.afterClosed().subscribe(data => {

@@ -39,7 +39,7 @@ export class ViewProductComponent {
   }
 
   addReview(): void {
-    if (this.reviewForm.valid) {
+    if (this.reviewForm.get('comment').value) {
       const newReview = {
         productId: this.productId,
         username: 'User',
@@ -48,6 +48,8 @@ export class ViewProductComponent {
       };
 
       this.addProductReviews(newReview);
+    }else{
+      this.backSVC.openAlertDialogMessage("Please enter your review before proceeding.");
     }
   }
 
@@ -106,14 +108,14 @@ export class ViewProductComponent {
       }
 
       this.selectedProduct = response.Data[0];
-      this.selectedImage = this.selectedProduct['image'];
+      this.selectedImage = this.selectedProduct['productImages'][0].url;
 
       if (response.Data[0].color) {
-        this.selectedProduct.colors = JSON.parse(response.Data[0].color);
+        this.selectedProduct.colors = response.Data[0].color;
       }
 
       if (response.Data[0].size) {
-        this.selectedProduct.sizes = JSON.parse(response.Data[0].size);
+        this.selectedProduct.sizes = response.Data[0].size;
       }
 
       this.cd.detectChanges();
@@ -148,7 +150,7 @@ export class ViewProductComponent {
         // informing navbar to hide cart if the popup comes
         this.backSVC.setSelectedOption('');
 
-        this.backSVC.openAlertDialogMessage(`The product "${product.title}" is already in your cart. Feel free to review it in your cart or continue shopping.`);
+        this.backSVC.openAlertDialogMessage(`The product "${product.product_name}" is already in your cart. Feel free to review it in your cart or continue shopping.`);
       }
       return;
     }

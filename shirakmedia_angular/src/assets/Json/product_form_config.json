@@ -43,7 +43,7 @@
         },
         {
           "field_display_name": "Product Category",
-          "field_internal_name": "Category",
+          "field_internal_name": "category",
           "control_type": "input",
           "options": [],
           "isRequired": true,

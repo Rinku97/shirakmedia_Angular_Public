@@ -185,3 +185,26 @@
     -ms-overflow-style: none;
   }
   
+
+  .img-cls {
+    height: 20px !important;
+    width: 20px !important;
+    cursor: pointer;
+  }
+
+  @mixin line-clamp($lines) {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: $lines; // Limit to specified lines
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.text-container {
+    @include line-clamp(2); // Limit to 2 lines
+    line-height: 1.5em; // Adjust line height as needed
+    max-height: 3em; // Ensure it matches line height
+}
+
+
+  

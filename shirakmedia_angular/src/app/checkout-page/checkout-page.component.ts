@@ -95,12 +95,14 @@ export class CheckoutPageComponent {
   }
 
   calculateRoundedTotalPrice() {
-    // Calculate the total price by summing up the price of each item
-    const totalPrice = this.products.reduce((sum, item) => sum + item.price, 0);
+    const totalPrice = this.products.reduce((sum, item) => {
+        const price = parseFloat(item.price);
+        return sum + (isNaN(price) ? 0 : price); 
+    }, 0);
 
-    // Round the total price to the nearest whole number
     this.roundedTotalPrice = Math.round(totalPrice);
-  }
+}
+
 
   createFormControls(): void {
     const controls = {};
@@ -244,8 +246,8 @@ export class CheckoutPageComponent {
 
   enlargeImage(product: any): void {
     let sendObj = {
-      name: "",
-      url: product.image
+      name: product.productImages[0].name,
+      url: product.productImages[0].url
     }
     const dialogRef = this.dialog.open(ShowLargeImageComponent, {
       data: sendObj,

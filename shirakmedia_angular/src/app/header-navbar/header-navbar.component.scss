@@ -9,6 +9,14 @@
     z-index: 1000; /* Ensure it stays on top of other content */
     height: 64px; 
   }
+
+  .navbar-logo {
+    height: 40px;   
+    width: 40px;    
+    // border-radius: 50%;
+    object-fit: cover;  
+  }
+  
   
   /* Adjust the content below the navbar */
   .main-content {
@@ -277,5 +285,19 @@
 .btn{
   background-color: black !important;
   white-space:nowrap;
+}
+
+@mixin line-clamp($lines) {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $lines; // Limit to specified lines
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.text-container {
+  @include line-clamp(2); // Limit to 2 lines
+  line-height: 1.5em; // Adjust line height as needed
+  max-height: 3em; // Ensure it matches line height
 }
 

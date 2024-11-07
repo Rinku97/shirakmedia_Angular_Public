@@ -8,6 +8,8 @@ import { Router } from '@angular/router';
 import { CommonService } from '../common.service';
 import { Subscription } from 'rxjs';
 import { ConfigService } from '../config.service';
+import { ConfirmationAlertComponent } from '../popup/confirmation-alert/confirmation-alert.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-all-product-lists',
@@ -59,7 +61,7 @@ export class AllProductListsComponent {
   selectedOption: string = 'Home';
   private subscription: Subscription;
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private router:Router, private backSVC:CommonService, private config:ConfigService, private cd:ChangeDetectorRef) {
+  constructor(private fb: FormBuilder, private http: HttpClient, private router:Router, private backSVC:CommonService, private config:ConfigService, private cd:ChangeDetectorRef, private dialog:MatDialog) {
     this.filterForm = this.fb.group({
       category: [''],
       search: [''],
@@ -144,12 +146,13 @@ export class AllProductListsComponent {
     this.showCategoryFilterOption = !this.showCategoryFilterOption;
     this.backSVC.setSelectedOption('');
   }
-
+  
+  // to filter the products based on search and sort and also with category too.
   applyFilters(values: any, categoryType): void {
     const { category, search, sort } = values;
     let filtered = this.products.filter(product => {
       const matchesCategory = category ? product[categoryType] === category : true;
-      const matchesSearch = search ? product.title.toLowerCase().includes(search.toLowerCase()) : true;
+      const matchesSearch = search ? product.product_name.toLowerCase().includes(search.toLowerCase()) : true;
       return matchesCategory && matchesSearch;
     });
 
@@ -212,7 +215,7 @@ export class AllProductListsComponent {
           // if the category side nav is opened then closing that so that it can be viewed propery in mobile view.
           this.showCategoryFilterOption = false;
 
-          this.backSVC.openAlertDialogMessage(`The product "${product.title}" is already in your cart. Feel free to review it in your cart or continue shopping.`);
+          this.backSVC.openAlertDialogMessage(`The product "${product.product_name}" is already in your cart. Feel free to review it in your cart or continue shopping.`);
         }
         return;
     }

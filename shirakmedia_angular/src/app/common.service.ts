@@ -97,7 +97,7 @@ export class CommonService {
 
   handleDialogClose(dialogRef, loadHomeScreen?, loadUrl?, requireClose?, keepOnSameScreen?) {
     dialogRef.afterClosed().subscribe((data) => {
-      if (requireClose && data.toLowerCase() === 'no') {
+      if (requireClose && data && data.toLowerCase() === 'no') {
         return;
       }
       
@@ -152,13 +152,6 @@ export class CommonService {
   /** ########################################################################################################################### **/
 
   /** Only POST Methods */
-
-  async addNewProduct(postObj:any): Promise<any> {
-
-    let url = this.apiURL + 'products/create';
-    return await this.http.post<any>(url, postObj).toPromise();
-    
-  }
 
   async getProductById(productId): Promise<any> {
     let postObj = {

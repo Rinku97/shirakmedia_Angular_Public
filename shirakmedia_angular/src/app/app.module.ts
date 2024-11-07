@@ -10,9 +10,7 @@ import { NgHttpLoaderModule } from 'ng-http-loader';
 import { FileUploadModule } from 'ng2-file-upload';
 import { AppRoutingModule } from './app.routing.module';
 import { CommonModule } from '@angular/common';
-import { LoginSignupComponent } from './login-signup/login-signup.component';
 import { ViewProductComponent } from './view-product/view-product.component';
-import { AddNewProductComponent } from './add-new-product/add-new-product.component';
 import { ShowLargeImageComponent } from './popup/show-large-image/show-large-image.component';
 import { HeaderNavbarComponent } from './header-navbar/header-navbar.component';
 import { AlertComponent } from './popup/alert/alert.component';
@@ -20,6 +18,7 @@ import { AllProductListsComponent } from './all-product-lists/all-product-lists.
 import { CheckoutPageComponent } from './checkout-page/checkout-page.component';
 import { ConfirmationAlertComponent } from './popup/confirmation-alert/confirmation-alert.component';
 import { ConfigService } from './config.service';
+import { AboutPageComponent } from './about-page/about-page.component';
 
 export function initializeApp(configService: ConfigService): () => Promise<any> {
   return () => configService.loadConfig();
@@ -28,15 +27,14 @@ export function initializeApp(configService: ConfigService): () => Promise<any> 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginSignupComponent,
     ViewProductComponent,
-    AddNewProductComponent,
     ShowLargeImageComponent,
     HeaderNavbarComponent,
     AlertComponent,
     AllProductListsComponent,
     CheckoutPageComponent,
-    ConfirmationAlertComponent
+    ConfirmationAlertComponent,
+    AboutPageComponent
   ],
   imports: [
     CommonModule,
