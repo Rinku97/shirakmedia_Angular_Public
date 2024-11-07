@@ -22,7 +22,7 @@ export class HeaderNavbarComponent {
   showCategoryOptions: boolean = false;
 
   productLength: number = 0;
-  roundedTotalPrice: number = 0;
+  roundedTotalPrice: any = 0;
 
   cartProducts: any[] = [];
 
@@ -118,14 +118,21 @@ export class HeaderNavbarComponent {
     this.calculateRoundedTotalPrice();
   }
 
-  calculateRoundedTotalPrice() {
-    const totalPrice = this.cartProducts.reduce((sum, item) => {
-        const price = parseFloat(item.price);
-        return sum + (isNaN(price) ? 0 : price); 
-    }, 0);
+calculateRoundedTotalPrice() {
+  const totalPrice = this.cartProducts.reduce((sum, item) => {
+      const price = parseFloat(item.price);
+      return sum + (isNaN(price) ? 0 : price); 
+  }, 0);
 
-    this.roundedTotalPrice = Math.round(totalPrice);
+  // Format the rounded total price in INR format
+  this.roundedTotalPrice = Math.round(totalPrice).toLocaleString('en-IN');
 }
+
+ // Function to format the price in INR format
+ getFormattedPrice(product) {
+  return '₹' + Math.round(product.price).toLocaleString('en-IN');
+}
+
 
   closeDrawer() {
     this.containerHeight = '0';

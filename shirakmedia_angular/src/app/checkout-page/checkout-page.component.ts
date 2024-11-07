@@ -59,7 +59,7 @@ export class CheckoutPageComponent {
 
   products: any[] = [];
   productIds: any;
-  roundedTotalPrice: number = 0;
+  roundedTotalPrice: any = 0;
 
   constructor(private fb: FormBuilder, private http: HttpClient,
     private router: Router, private backSVC: CommonService, private config: ConfigService,
@@ -100,8 +100,8 @@ export class CheckoutPageComponent {
         return sum + (isNaN(price) ? 0 : price); 
     }, 0);
 
-    this.roundedTotalPrice = Math.round(totalPrice);
-}
+    this.roundedTotalPrice = Math.round(totalPrice).toLocaleString('en-IN');
+  }
 
 
   createFormControls(): void {
@@ -259,6 +259,11 @@ export class CheckoutPageComponent {
 
     dialogRef.afterClosed().subscribe(data => {
     })
+  }
+
+  // Function to format the price in INR format
+  getFormattedPrice(product) {
+    return '₹' + Math.round(product.price).toLocaleString('en-IN');
   }
 
 }

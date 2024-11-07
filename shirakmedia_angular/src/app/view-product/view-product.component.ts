@@ -175,5 +175,10 @@ export class ViewProductComponent {
     this.router.navigate([`checkout/${encodedString}`]);
   }
 
+  // Function to format the price in INR format
+  getFormattedPrice(product) {
+    return '₹' + Math.round(product.price).toLocaleString('en-IN');
+  }
+
 
 }

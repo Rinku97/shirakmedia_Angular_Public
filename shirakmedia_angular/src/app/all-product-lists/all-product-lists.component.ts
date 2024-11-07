@@ -18,7 +18,7 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class AllProductListsComponent {
 
-  products: any[] =  [];
+  products: any[] = [];
 
   filteredProducts: any[] = [];
   paginatedProducts: any[] = [];
@@ -26,13 +26,13 @@ export class AllProductListsComponent {
   pageSize = 10;
   pageIndex = 0;
 
-  showFilterOptions:boolean = false;
-  showCategoryFilterOption:boolean = false;
+  showFilterOptions: boolean = false;
+  showCategoryFilterOption: boolean = false;
 
 
   /** CATEGPRY FILTER */
   TREE_DATA = [];
-  
+
   private _transformer = (node: any, level: number) => {
     return {
       expandable: !!node.children && node.children.length > 0,
@@ -61,7 +61,7 @@ export class AllProductListsComponent {
   selectedOption: string = 'Home';
   private subscription: Subscription;
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private router:Router, private backSVC:CommonService, private config:ConfigService, private cd:ChangeDetectorRef, private dialog:MatDialog) {
+  constructor(private fb: FormBuilder, private http: HttpClient, private router: Router, private backSVC: CommonService, private config: ConfigService, private cd: ChangeDetectorRef, private dialog: MatDialog) {
     this.filterForm = this.fb.group({
       category: [''],
       search: [''],
@@ -75,14 +75,14 @@ export class AllProductListsComponent {
 
     this.subscription = this.backSVC.selectedOption$.subscribe(option => {
       this.selectedOption = option;
-      if(option.toLowerCase() == 'category'){
+      if (option.toLowerCase() == 'category') {
         this.showCategoryFilterOption = !this.showCategoryFilterOption;
-        if(this.showCategoryFilterOption){
+        if (this.showCategoryFilterOption) {
           this.getCategroies();
         }
       }
 
-      if(option.toLowerCase() == 'cart' && window.innerWidth <= 600){
+      if (option.toLowerCase() == 'cart' && window.innerWidth <= 600) {
         this.showCategoryFilterOption = false;
       }
 
@@ -95,11 +95,11 @@ export class AllProductListsComponent {
     }
   }
 
-  async getAllProducts(){
+  async getAllProducts() {
 
     try {
       let response = await this.backSVC.getAllProducts();
-      
+
       if (!response.Success) {
         this.backSVC.openAlertDialogMessage(response.Message);
         return;
@@ -122,31 +122,31 @@ export class AllProductListsComponent {
 
   async getCategroies() {
     try {
-        let response = await this.backSVC.getCategroies();
+      let response = await this.backSVC.getCategroies();
 
-        // Check if the response indicates an error
-        if (!response.Success) {
-            this.backSVC.openAlertDialogMessage(response.Message);
-            return; // Exit the function if there's an error
-        }
+      // Check if the response indicates an error
+      if (!response.Success) {
+        this.backSVC.openAlertDialogMessage(response.Message);
+        return; // Exit the function if there's an error
+      }
 
-        this.TREE_DATA = response.Data;
-        this.dataSource.data = this.TREE_DATA;
+      this.TREE_DATA = response.Data;
+      this.dataSource.data = this.TREE_DATA;
 
     } catch (error) {
-        this.backSVC.openAlertDialogMessage(error.error.Message);
+      this.backSVC.openAlertDialogMessage(error.error.Message);
     }
-}
+  }
 
-  onApplyFilterButton(){
+  onApplyFilterButton() {
     this.showFilterOptions = !this.showFilterOptions;
   }
 
-  onCloseButton(){
+  onCloseButton() {
     this.showCategoryFilterOption = !this.showCategoryFilterOption;
     this.backSVC.setSelectedOption('');
   }
-  
+
   // to filter the products based on search and sort and also with category too.
   applyFilters(values: any, categoryType): void {
     const { category, search, sort } = values;
@@ -198,34 +198,34 @@ export class AllProductListsComponent {
     return stars;
   }
 
-  addToCart(product:any, comingFormBuyNow?){
+  addToCart(product: any, comingFormBuyNow?) {
     // Retrieve the existing cartProducts from localStorage, or initialize an empty array if not found
     let cartProducts = JSON.parse(localStorage.getItem("cartProducts")) || [];
-    
+
     // Check if the product already exists in the cart. Assuming product has a unique identifier like 'id'.
     const productExists = cartProducts.some(cartProduct => cartProduct.id === product.id);
-    
+
     if (productExists) {
-        // If the product is already in the cart, log a message and return only if it is not clicked again
-        if(!comingFormBuyNow){
+      // If the product is already in the cart, log a message and return only if it is not clicked again
+      if (!comingFormBuyNow) {
 
-          // informing navbar to hide cart if the popup comes
-          this.backSVC.setSelectedOption('');
+        // informing navbar to hide cart if the popup comes
+        this.backSVC.setSelectedOption('');
 
-          // if the category side nav is opened then closing that so that it can be viewed propery in mobile view.
-          this.showCategoryFilterOption = false;
+        // if the category side nav is opened then closing that so that it can be viewed propery in mobile view.
+        this.showCategoryFilterOption = false;
 
-          this.backSVC.openAlertDialogMessage(`The product "${product.product_name}" is already in your cart. Feel free to review it in your cart or continue shopping.`);
-        }
-        return;
+        this.backSVC.openAlertDialogMessage(`The product "${product.product_name}" is already in your cart. Feel free to review it in your cart or continue shopping.`);
+      }
+      return;
     }
 
     // Add the new product to the array
     cartProducts.push(product);
-    
+
     // Store the updated cartProducts array back into localStorage
     localStorage.setItem("cartProducts", JSON.stringify(cartProducts));
-        
+
     // Update the cart count
     this.backSVC.updateCartCount(cartProducts.length);
   }
@@ -238,26 +238,31 @@ export class AllProductListsComponent {
     let encryptedId = this.config.encrypt(product.id.toString());
     let encodedString = encodeURIComponent(encryptedId);
     this.router.navigate([`checkout/${encodedString}`]);
-}
+  }
 
 
-  onProductClick(product:any){
+  onProductClick(product: any) {
     this.router.navigate([`/ViewProduct/${product.id}`]);
   }
 
   onCategoryClick(node: any) {
-    if(node.name.toLowerCase() == 'all'){
+    if (node.name.toLowerCase() == 'all') {
       this.treeControl.collapseAll()
     }
     this.applyFilters({ category: node.name.toLowerCase() == 'all' ? '' : node.name }, 'category');
   }
-  
+
   onSubCategoryClick(node: any) {
-    if(node.name.toLowerCase() == 'all'){
+    if (node.name.toLowerCase() == 'all') {
       this.treeControl.collapseAll()
     }
     if (!node.expandable) {
       this.applyFilters({ category: node.name.toLowerCase() == 'all' ? '' : node.name }, 'sub_category');
     }
+  }
+
+  // Function to format the price in INR format
+  getFormattedPrice(product) {
+    return '₹' + Math.round(product.price).toLocaleString('en-IN');
   }
 }

@@ -20,7 +20,7 @@
               {{ star }}
             </mat-icon>
           </div>
-          <p class="price">Price: ₹{{ selectedProduct.price }}</p>
+          <p class="price">Price: {{ getFormattedPrice(selectedProduct) }}</p>
           <!-- <div class="color-selection">
             <p>Color:</p>
             <img *ngFor="let color of selectedProduct.colors" [src]="color">

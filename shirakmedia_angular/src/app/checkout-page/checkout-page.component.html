@@ -61,7 +61,7 @@
           </td>
           <td><a (click)="onProductTitleClick(product)" class="title-link text-container" [matTooltip]="product.product_name">{{ product.product_name }}</a></td>
           <td>{{ product.category }}</td>
-          <td>{{ product.price }}</td>
+          <td>{{ getFormattedPrice(product) }}</td>
         </tr>
       </tbody>
     </table>
