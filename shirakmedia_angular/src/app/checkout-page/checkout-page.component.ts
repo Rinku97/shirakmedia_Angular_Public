@@ -144,12 +144,12 @@ export class CheckoutPageComponent {
     const deliveryLocation = this.checkoutForm.get('deliveryLocation').value; // Get the delivery location
 
     const options = {
-      key: 'rzp_test_cVVPrmC1vgnDAj', // Replace with your Razorpay key
-      amount: amountInPaise, // Amount in paise (e.g., 50000 paise = 500 INR)
+      key: 'rzp_test_cVVPrmC1vgnDAj', 
+      amount: amountInPaise, 
       currency: 'INR',
       name: 'Shirak Media',
       description: 'Test Transaction',
-      image: 'https://cdn.pixabay.com/photo/2016/12/27/13/10/logo-1933884_640.png',
+      image: 'assets/Images/shirakMediaLogo.jpeg',
       handler: (response) => {
         this.onPaymentSuccess(response);
       }, // Bind the context
