@@ -42,14 +42,21 @@
                     (click)="selectSize(size)">{{ size.name }}</span>
                 </div>
               </div>
-              <mat-form-field appearance="fill" style="width: 50%;">
-                <mat-label>Quantity</mat-label>
-                <input matInput type="number" [formControl]="quantityControl"
-                       [placeholder]="getQuantityPlaceholder()">
-                <mat-error *ngIf="quantityControl.invalid && quantityControl.touched">
-                  Quantity must be at least {{ minQuantity }}.
-                </mat-error>
-              </mat-form-field>
+
+              <div class="quantity-control">
+                <button (click)="decreaseQuantity()" [disabled]="quantityControl.value <= minQuantity" class="quantity-btn">-</button>
+                
+                <input type="number" [formControl]="quantityControl" 
+                       [min]="minQuantity" class="quantity-input">
+                
+                <button (click)="increaseQuantity()" class="quantity-btn">+</button>
+              </div>
+              
+              <div class="quantity-note">
+                NOTE: The minimum quantity for this order is {{ minQuantity }}.
+              </div>
+              
+              
             </div>
             <!-- <div class="size-selection">
             <p>Size:</p>

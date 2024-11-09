@@ -18,7 +18,8 @@ export class ViewProductComponent {
   productId: any;
   selectedSize: any = "";
   selectedColor: any = "";
-  minQuantity: number = 500; 
+  minQuantity: number = 1; 
+  quantity: number = 1; 
 
   replyForms: { [key: number]: FormGroup } = {};
 
@@ -37,6 +38,11 @@ export class ViewProductComponent {
   }
 
   ngOnInit(): void {
+    this.quantityControl.valueChanges.subscribe(value => {
+      if (value < this.minQuantity) {
+        this.quantityControl.setValue(this.minQuantity, { emitEvent: false });
+      }
+    });
   }
 
   setRating(rating: number): void {
@@ -128,6 +134,8 @@ export class ViewProductComponent {
       this.quantityControl.setValue(this.minQuantity); 
       this.quantityControl.setValidators([Validators.required, Validators.min(this.minQuantity)]);
 
+      this.quantity = this.minQuantity;
+
       this.cd.detectChanges();
 
     } catch (error) {
@@ -193,15 +201,11 @@ export class ViewProductComponent {
   selectSize(size: any) {
     this.selectedProduct.selectedSize = size;
     this.selectedSize = size;
-
-    console.log(this.selectedProduct);
   }
 
   selectColor(color: any) {
     this.selectedProduct.selectedColor = color;
     this.selectedColor = color;
-    console.log(this.selectedProduct);
-
   }
 
   validateQuantity(product:any, comingFromBuyNow?:boolean) {
@@ -211,7 +215,6 @@ export class ViewProductComponent {
 
     this.selectedProduct.min_quantity = this.quantityControl.value;
     console.log(this.selectedProduct);
-    // return;
 
 
     if(comingFromBuyNow){
@@ -219,6 +222,16 @@ export class ViewProductComponent {
     }else{
       this.addToCart(product);
     }
+  }
+
+  decreaseQuantity() {
+    if (this.quantityControl.value > this.minQuantity) {
+      this.quantityControl.setValue(this.quantityControl.value - 1);
+    }
+  }
+
+  increaseQuantity() {
+    this.quantityControl.setValue(Number(this.quantityControl.value) + 1);
   }
 
   getQuantityPlaceholder(): string {

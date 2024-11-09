@@ -296,7 +296,50 @@ mat-form-field {
   color: #ffd700; /* Gold color for stars */
 }
 
-mat-error {
-  font-size: 12px; 
-  color: red;
+.quantity-control {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
 }
+
+.quantity-btn {
+  width: 25px;
+  height: 25px;
+  font-size: 20px;
+  background-color: #f4f4f4;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.quantity-btn:disabled {
+  cursor: not-allowed;
+  background-color: #f1f1f1;
+}
+
+.quantity-btn:hover {
+  background-color: #e2e2e2;
+}
+
+.quantity-input {
+  width: 100px;
+  font-size: 15px;
+  margin: 0 10px;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  outline: none;
+}
+
+.quantity-note {
+  font-style: italic;
+  color: #a0a0a0; 
+  font-size: 14px; 
+}
+
+
+
