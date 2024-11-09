@@ -52,6 +52,9 @@
           <th>Product Image</th>
           <th>Title</th>
           <th>Category</th>
+          <th>Color</th>
+          <th>Size</th>
+          <th>Quantity</th>
           <th>Amount</th>
         </tr>
       </thead>
@@ -61,6 +64,9 @@
           </td>
           <td><a (click)="onProductTitleClick(product)" class="title-link text-container" [matTooltip]="product.product_name">{{ product.product_name }}</a></td>
           <td>{{ product.category }}</td>
+          <td>{{ product.color[0].name }}</td>
+          <td>{{ product.size[0].name }}</td>
+          <td>{{ product.min_quantity }}</td>
           <td>{{ getFormattedPrice(product) }}</td>
         </tr>
       </tbody>

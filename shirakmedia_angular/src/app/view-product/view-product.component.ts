@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { CommonService } from '../common.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfigService } from '../config.service';
@@ -16,16 +16,21 @@ export class ViewProductComponent {
   selectedImage: any;
 
   productId: any;
+  selectedSize: any = "";
+  selectedColor: any = "";
+  minQuantity: number = 500; 
 
   replyForms: { [key: number]: FormGroup } = {};
 
   reviewForm: FormGroup;
 
+  quantityControl = new FormControl();
+
   constructor(private fb: FormBuilder, private backSVC: CommonService, private ActRoute: ActivatedRoute, private cd: ChangeDetectorRef, private router: Router, private config: ConfigService) {
     this.productId = this.ActRoute.snapshot.paramMap.get('id');
     this.reviewForm = this.fb.group({
       comment: [''],
-      rating: [0] // Initialize rating
+      rating: [0]
     });
 
     this.getProductById();
@@ -110,13 +115,18 @@ export class ViewProductComponent {
       this.selectedProduct = response.Data[0];
       this.selectedImage = this.selectedProduct['productImages'][0].url;
 
-      if (response.Data[0].color) {
-        this.selectedProduct.colors = response.Data[0].color;
-      }
+      // if (response.Data[0].color) {
+      //   this.selectedProduct.colors = response.Data[0].color;
+      // }
 
-      if (response.Data[0].size) {
-        this.selectedProduct.sizes = response.Data[0].size;
-      }
+      // if (response.Data[0].size) {
+      //   this.selectedProduct.sizes = response.Data[0].size;
+      // }
+
+      this.minQuantity = this.selectedProduct.min_quantity || 1;
+
+      this.quantityControl.setValue(this.minQuantity); 
+      this.quantityControl.setValidators([Validators.required, Validators.min(this.minQuantity)]);
 
       this.cd.detectChanges();
 
@@ -180,5 +190,38 @@ export class ViewProductComponent {
     return '₹' + Math.round(product.price).toLocaleString('en-IN');
   }
 
+  selectSize(size: any) {
+    this.selectedProduct.selectedSize = size;
+    this.selectedSize = size;
 
+    console.log(this.selectedProduct);
+  }
+
+  selectColor(color: any) {
+    this.selectedProduct.selectedColor = color;
+    this.selectedColor = color;
+    console.log(this.selectedProduct);
+
+  }
+
+  validateQuantity(product:any, comingFromBuyNow?:boolean) {
+    if (this.quantityControl.value < this.minQuantity) {
+      this.quantityControl.setValue(this.minQuantity);
+    }
+
+    this.selectedProduct.min_quantity = this.quantityControl.value;
+    console.log(this.selectedProduct);
+    // return;
+
+
+    if(comingFromBuyNow){
+      this.onBuyNowClick(product, comingFromBuyNow);
+    }else{
+      this.addToCart(product);
+    }
+  }
+
+  getQuantityPlaceholder(): string {
+    return `Enter ≥ ${this.minQuantity} or selected quantity`;
+  }
 }

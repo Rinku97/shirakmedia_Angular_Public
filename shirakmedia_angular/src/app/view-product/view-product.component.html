@@ -26,29 +26,41 @@
             <img *ngFor="let color of selectedProduct.colors" [src]="color">
           </div> -->
           <div class="product-options">
-            <div class="colors" *ngIf="selectedProduct.colors">
+            <div class="colors" *ngIf="selectedProduct.color">
               <h3>Colors</h3>
               <div class="color-options" style="display: flex;">
                 <!-- <img *ngFor="let color of selectedProduct.colors" [src]="color" alt="Color Option"> -->
-                <div *ngFor="let color of selectedProduct.colors" alt="Color Option"
-                  [ngStyle]="{'background': color.name}">
+                <div *ngFor="let color of selectedProduct.color" alt="Color Option"
+                  [ngStyle]="{'background': color.name}" [ngClass]="{'selected': color === selectedColor}"
+                  (click)="selectColor(color)">
                 </div>
               </div>
-              <div class="sizes" *ngIf="selectedProduct.sizes">
+              <div class="sizes" *ngIf="selectedProduct.size">
                 <h3 style="margin: 16px 0px;">Sizes</h3>
                 <div class="size-options">
-                  <span *ngFor="let size of selectedProduct.sizes">{{ size.name }}</span>
+                  <span *ngFor="let size of selectedProduct.size" [ngClass]="{'selected': size === selectedSize}"
+                    (click)="selectSize(size)">{{ size.name }}</span>
                 </div>
               </div>
+              <mat-form-field appearance="fill" style="width: 50%;">
+                <mat-label>Quantity</mat-label>
+                <input matInput type="number" [formControl]="quantityControl"
+                       [placeholder]="getQuantityPlaceholder()">
+                <mat-error *ngIf="quantityControl.invalid && quantityControl.touched">
+                  Quantity must be at least {{ minQuantity }}.
+                </mat-error>
+              </mat-form-field>
             </div>
             <!-- <div class="size-selection">
             <p>Size:</p>
             <button mat-button *ngFor="let size of selectedProduct.sizes">{{ size }}</button>
           </div> -->
             <div class="action-buttons">
-              <button mat-raised-button color="primary" class="btn" (click)="addToCart(selectedProduct)">Add to
+              <button mat-raised-button color="primary" class="btn" (click)="validateQuantity(selectedProduct)">Add to
                 cart</button>
-              <button mat-raised-button color="accent" class="btn" (click)="onBuyNowClick(selectedProduct, true)">Buy
+              <!-- <button mat-raised-button color="accent" class="btn" (click)="onBuyNowClick(selectedProduct, true)">Buy
+                Now</button> -->
+              <button mat-raised-button color="accent" class="btn" (click)="validateQuantity(selectedProduct, true)">Buy
                 Now</button>
               <!-- <button mat-raised-button color="accent" class="btn-fav">
               <mat-icon style="margin: 0; color: black;">favorite_border</mat-icon>
