@@ -6,6 +6,7 @@ import { CommonService } from '../common.service';
 import { ShowLargeImageComponent } from '../popup/show-large-image/show-large-image.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfigService } from '../config.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-checkout-page',
@@ -61,12 +62,21 @@ export class CheckoutPageComponent {
   productIds: any;
   roundedTotalPrice: any = 0;
 
+  productInfo:any[] = [];
+
   constructor(private fb: FormBuilder, private http: HttpClient,
-    private router: Router, private backSVC: CommonService, private config: ConfigService,
+    private router: Router, private backSVC: CommonService, private config: ConfigService,private location: Location,
     private dialog: MatDialog, private ActRoute: ActivatedRoute) {
     let productIds = this.ActRoute.snapshot.paramMap.get('ids');
     let decodedURI = decodeURIComponent(productIds);
     this.productIds = this.config.decrypt(decodedURI);
+
+    const state = this.location.getState() as { productDetails: any };
+    if (state) {
+      this.productInfo = state.productDetails;
+      console.log(this.productInfo);
+    }
+
     this.getProductById();
   }
 
@@ -87,6 +97,16 @@ export class CheckoutPageComponent {
 
       this.products = response.Data;
 
+      if(this.products.length == 1){
+        if(this.productInfo && this.productInfo.length > 0){
+          this.products[0].selectedColor = this.productInfo[0].selectedColor;
+          this.products[0].selectedSize = this.productInfo[0].selectedSize;
+          this.products[0].min_quantity = this.productInfo[0].minQty;
+        }
+      }
+
+      console.log(this.products);
+
       this.calculateRoundedTotalPrice();
 
     } catch (error) {
@@ -96,8 +116,9 @@ export class CheckoutPageComponent {
 
   calculateRoundedTotalPrice() {
     const totalPrice = this.products.reduce((sum, item) => {
-        const price = parseFloat(item.price);
-        return sum + (isNaN(price) ? 0 : price); 
+        const price:any = item.price * item.min_quantity;
+        const amount = parseFloat(price);
+        return sum + (isNaN(amount) ? 0 : amount); 
     }, 0);
 
     this.roundedTotalPrice = Math.round(totalPrice).toLocaleString('en-IN');
@@ -263,7 +284,8 @@ export class CheckoutPageComponent {
 
   // Function to format the price in INR format
   getFormattedPrice(product) {
-    return '₹' + Math.round(product.price).toLocaleString('en-IN');
+    let price = product.price * product.min_quantity;
+    return '₹' + Math.round(price).toLocaleString('en-IN');
   }
 
 }

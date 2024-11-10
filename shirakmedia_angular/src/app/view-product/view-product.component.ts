@@ -18,8 +18,8 @@ export class ViewProductComponent {
   productId: any;
   selectedSize: any = "";
   selectedColor: any = "";
-  minQuantity: number = 1; 
-  quantity: number = 1; 
+  minQuantity: number = 1;
+  quantity: number = 1;
 
   replyForms: { [key: number]: FormGroup } = {};
 
@@ -59,7 +59,7 @@ export class ViewProductComponent {
       };
 
       this.addProductReviews(newReview);
-    }else{
+    } else {
       this.backSVC.openAlertDialogMessage("Please enter your review before proceeding.");
     }
   }
@@ -131,7 +131,7 @@ export class ViewProductComponent {
 
       this.minQuantity = this.selectedProduct.min_quantity || 1;
 
-      this.quantityControl.setValue(this.minQuantity); 
+      this.quantityControl.setValue(this.minQuantity);
       this.quantityControl.setValidators([Validators.required, Validators.min(this.minQuantity)]);
 
       this.quantity = this.minQuantity;
@@ -190,7 +190,13 @@ export class ViewProductComponent {
 
     let encryptedId = this.config.encrypt(product.id.toString());
     let encodedString = encodeURIComponent(encryptedId);
-    this.router.navigate([`checkout/${encodedString}`]);
+
+    // sending additional details over the route to checkout page
+    const productInfoObj = [{ minQty: this.quantityControl.value, selectedColor: this.selectedColor, selectedSize: this.selectedSize }];
+    console.log(productInfoObj);
+    this.router.navigate([`checkout/${encodedString}`], {
+      state: { productDetails: productInfoObj }
+    });
   }
 
   // Function to format the price in INR format
@@ -208,7 +214,7 @@ export class ViewProductComponent {
     this.selectedColor = color;
   }
 
-  validateQuantity(product:any, comingFromBuyNow?:boolean) {
+  validateQuantity(product: any, comingFromBuyNow?: boolean) {
     if (this.quantityControl.value < this.minQuantity) {
       this.quantityControl.setValue(this.minQuantity);
     }
@@ -217,9 +223,9 @@ export class ViewProductComponent {
     console.log(this.selectedProduct);
 
 
-    if(comingFromBuyNow){
+    if (comingFromBuyNow) {
       this.onBuyNowClick(product, comingFromBuyNow);
-    }else{
+    } else {
       this.addToCart(product);
     }
   }
