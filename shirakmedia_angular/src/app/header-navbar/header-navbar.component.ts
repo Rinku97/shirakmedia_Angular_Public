@@ -132,7 +132,7 @@ export class HeaderNavbarComponent {
     // Retrieve the cartProducts from localStorage and parse it into an array
     const cartProducts = JSON.parse(localStorage.getItem("cartProducts")) || [];
 
-    if(this.openCartSideNav){
+    if(this.openCartSideNav && cartProducts.length > 0){
       await this.getAllProducts();
     }
 
