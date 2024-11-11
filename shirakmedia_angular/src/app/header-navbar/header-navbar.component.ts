@@ -26,6 +26,7 @@ export class HeaderNavbarComponent {
   roundedTotalPrice: any = 0;
 
   cartProducts: any[] = [];
+  allProducts: any[] = [];
 
   private subscription: Subscription;
 
@@ -110,14 +111,52 @@ export class HeaderNavbarComponent {
     this.closeDrawer();
   }
 
-  getCartProducts() {
+  async getAllProducts() {
+
+    try {
+      let response = await this.backSVC.getAllProducts();
+
+      if (!response.Success) {
+        this.backSVC.openAlertDialogMessage(response.Message);
+        return;
+      }
+
+      this.allProducts = response.Data;
+
+    } catch (error) {
+      this.backSVC.openAlertDialogMessage(error.error.Message);
+    }
+  }
+
+  async getCartProducts() {
     // Retrieve the cartProducts from localStorage and parse it into an array
     const cartProducts = JSON.parse(localStorage.getItem("cartProducts")) || [];
+
+    if(this.openCartSideNav){
+      await this.getAllProducts();
+    }
 
     this.cartProducts = cartProducts;
     this.productLength = this.cartProducts.length;
 
     cartProducts.forEach(item => {
+
+      let product = this.allProducts.find(x => x.id == item.id);
+
+      if(product){
+
+          item.min_quantity = product.min_quantity;
+
+          item.price = product.price;
+
+          item.product_name = product.product_name;
+
+          item.color = product.color;
+
+          item.size = product.size;
+
+          item.productImages = product.productImages;
+      }
 
       item.selectedColor = item.color[0];
       item.selectedSize = item.size[0];
