@@ -301,3 +301,88 @@
   max-height: 3em; // Ensure it matches line height
 }
 
+
+.colors {
+  margin-bottom: 20px;
+}
+
+.sizes {
+  margin-bottom: 20px;
+}
+
+.color-options div {
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  object-fit: cover;
+  margin-right: 10px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+}
+
+.color-options div.selected {
+  border:2px solid #607d8b; 
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.size-options span {
+  display: inline-block;
+  margin-right: 10px;
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 10px;
+}
+
+.size-options span.selected {
+  background-color: #607d8b;
+  color: white;
+  border-color: #607d8b;
+}
+
+
+.quantity-control {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.quantity-btn {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  background-color: #f4f4f4;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.quantity-btn:disabled {
+  cursor: not-allowed;
+  background-color: #f1f1f1;
+}
+
+.quantity-btn:hover {
+  background-color: #e2e2e2;
+}
+
+.quantity-input {
+  width: 100px;
+  font-size: 12px;
+  margin: 0 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  outline: none;
+}
+
+.quantity-note {
+  font-style: italic;
+  color: #a0a0a0; 
+  font-size: 12px; 
+}
+

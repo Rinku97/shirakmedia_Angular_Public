@@ -78,6 +78,42 @@
               {{ star }}
             </mat-icon>
           </div>
+          <div class="colors" *ngIf="product.color">
+            <h5>Color: {{product.selectedColor.name || product.color[0].name}}</h5>
+            <!-- <h3>Color: {{product.selectedColor.name}}</h3> -->
+            <div class="color-options" style="display: flex;">
+              <!-- <img *ngFor="let color of selectedProduct.colors" [src]="color" alt="Color Option"> -->
+               <!-- <div *ngFor="let color of selectedProduct.color" style="width: 40px;height: 40px;border-radius: 10px;" [ngClass]="{'selected': color === selectedColor}"> -->
+                <div *ngFor="let color of product.color" alt="Color Option"
+                  [ngStyle]="{'background': color.name}" [ngClass]="{'selected': color === product.selectedColor}"
+                  (click)="selectColor(product, color)">
+                </div>
+              <!-- </div> -->
+            </div>
+            <div class="sizes" *ngIf="product.size">
+              <!-- <h3 style="margin: 16px 0px;">Size: {{product.selectedSize.name}}</h3> -->
+              <h5 style="margin: 16px 0px;">Size: {{product.selectedSize.name || product.size[0].name}}</h5>
+              <div class="size-options">
+                <span *ngFor="let size of product.size" [ngClass]="{'selected': size === product.selectedSize}"
+                  (click)="selectSize(product, size)">{{ size.name }}</span>
+              </div>
+            </div>
+
+            <div class="quantity-control">
+              <button (click)="decreaseQuantity(product)" [disabled]="product.selectedQty <= product.min_quantity" class="quantity-btn">-</button>
+              
+              <input type="number"
+                     [min]="product.min_quantity" [value]="product.selectedQty" class="quantity-input" (input)="onQuantityChange($event, product)">
+              
+              <button (click)="increaseQuantity(product)" class="quantity-btn">+</button>
+            </div>
+            
+            <div class="quantity-note">
+              NOTE: The minimum quantity for this order is {{ product.min_quantity }}.
+            </div>
+            
+            
+          </div>
         </mat-card-content>
         <mat-card-actions class="action-buttons">
           <!-- <div class="action-buttons"> -->

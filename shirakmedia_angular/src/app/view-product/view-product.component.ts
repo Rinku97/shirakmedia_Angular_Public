@@ -121,13 +121,13 @@ export class ViewProductComponent {
       this.selectedProduct = response.Data[0];
       this.selectedImage = this.selectedProduct['productImages'][0].url;
 
-      // if (response.Data[0].color) {
-      //   this.selectedProduct.colors = response.Data[0].color;
-      // }
+      if (response.Data[0].color) {
+        this.selectedColor = response.Data[0].color[0];
+      }
 
-      // if (response.Data[0].size) {
-      //   this.selectedProduct.sizes = response.Data[0].size;
-      // }
+      if (response.Data[0].size) {
+        this.selectedSize = response.Data[0].size[0];
+      }
 
       this.minQuantity = this.selectedProduct.min_quantity || 1;
 
@@ -192,8 +192,7 @@ export class ViewProductComponent {
     let encodedString = encodeURIComponent(encryptedId);
 
     // sending additional details over the route to checkout page
-    const productInfoObj = [{ minQty: this.quantityControl.value, selectedColor: this.selectedColor, selectedSize: this.selectedSize }];
-    console.log(productInfoObj);
+    const productInfoObj = [{ id:product.id, minQty: this.quantityControl.value, selectedColor: this.selectedColor, selectedSize: this.selectedSize }];
     this.router.navigate([`checkout/${encodedString}`], {
       state: { productDetails: productInfoObj }
     });

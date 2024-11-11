@@ -97,11 +97,19 @@ export class CheckoutPageComponent {
 
       this.products = response.Data;
 
-      if(this.products.length == 1){
+      if(this.products.length > 0){
         if(this.productInfo && this.productInfo.length > 0){
-          this.products[0].selectedColor = this.productInfo[0].selectedColor;
-          this.products[0].selectedSize = this.productInfo[0].selectedSize;
-          this.products[0].min_quantity = this.productInfo[0].minQty;
+
+          this.products.forEach(item => {
+            let product = this.productInfo.find(x => x.id == item.id);
+            item.selectedColor = product.selectedColor;
+            item.selectedSize = product.selectedSize;
+            item.min_quantity = product.minQty;
+          })
+
+          // this.products[0].selectedColor = this.productInfo[0].selectedColor;
+          // this.products[0].selectedSize = this.productInfo[0].selectedSize;
+          // this.products[0].min_quantity = this.productInfo[0].minQty;
         }
       }
 

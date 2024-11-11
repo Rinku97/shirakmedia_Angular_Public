@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { ConfigService } from '../config.service';
 import { ConfirmationAlertComponent } from '../popup/confirmation-alert/confirmation-alert.component';
 import { MatDialog } from '@angular/material/dialog';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-header-navbar',
@@ -115,6 +116,15 @@ export class HeaderNavbarComponent {
 
     this.cartProducts = cartProducts;
     this.productLength = this.cartProducts.length;
+
+    cartProducts.forEach(item => {
+
+      item.selectedColor = item.color[0];
+      item.selectedSize = item.size[0];
+      item.selectedQty = item.min_quantity;
+      
+    });
+
     this.calculateRoundedTotalPrice();
   }
 
@@ -186,7 +196,14 @@ calculateRoundedTotalPrice() {
 
     let encryptedId = this.config.encrypt(product.id.toString());
     let encodedString = encodeURIComponent(encryptedId);
-    this.router.navigate([`checkout/${encodedString}`]);
+
+    const productInfo = [{ id:product.id, minQty: product.selectedQty, selectedColor: product.selectedColor, selectedSize: product.selectedSize }];
+    // sending additional details over the route to checkout page
+    this.router.navigate([`checkout/${encodedString}`], {
+      state: { productDetails: productInfo }
+    });
+
+    // this.router.navigate([`checkout/${encodedString}`]);
   }
 
   onCheckOutAll() {
@@ -194,7 +211,22 @@ calculateRoundedTotalPrice() {
     let encryptedId = this.config.encrypt(allProductsId);
     let encodedURI = encodeURIComponent(encryptedId);
 
-    this.router.navigate([`checkout/${encodedURI}`]);
+    const productInfo = [];
+    this.cartProducts.forEach(item => {
+      productInfo.push({
+        id:item.id, 
+        minQty: item.selectedQty, 
+        selectedColor: item.selectedColor, 
+        selectedSize: item.selectedSize 
+      });
+    });
+
+    // sending additional details over the route to checkout page
+    this.router.navigate([`checkout/${encodedURI}`], {
+      state: { productDetails: productInfo }
+    });
+
+    // this.router.navigate([`checkout/${encodedURI}`]);
   }
 
   removeFromCart(product: any) {
@@ -242,6 +274,44 @@ calculateRoundedTotalPrice() {
     const stars = Array(fullStars).fill('star');
     if (halfStars) stars.push('star_half');
     return stars;
+  }
+
+  selectSize(product:any, size: any) {
+    product.selectedSize = size;
+  }
+
+  selectColor(product:any, color: any) {
+    product.selectedColor = color;
+  }
+
+  decreaseQuantity(product:any) {
+    if (product.selectedQty < product.min_quantity) {
+      product.selectedQty = product.min_quantity;
+      return;
+    }
+    product.selectedQty --;
+  }
+
+  increaseQuantity(product:any) {
+    product.selectedQty ++;
+  }
+
+  onQuantityChange(event: Event, product:any): void {
+    console.log(event);
+    const inputElement = event.target as HTMLInputElement;
+    const newValue = inputElement.value;
+
+    // Prevent decreasing below the min_quantity
+    if (!newValue) {
+      inputElement.value = product.selectedQty.toString();
+      return;
+    }
+    
+    product.selectedQty = parseInt(newValue, 10);
+
+    if (product.selectedQty < product.min_quantity) {
+      product.selectedQty = product.min_quantity;
+    }
   }
 
 }
