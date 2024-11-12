@@ -103,7 +103,7 @@
               <button (click)="decreaseQuantity(product)" [disabled]="product.selectedQty <= product.min_quantity" class="quantity-btn">-</button>
               
               <input type="number"
-                     [min]="product.min_quantity" [value]="product.selectedQty" class="quantity-input" (input)="onQuantityChange($event, product)">
+                     [min]="product.min_quantity" [value]="product.selectedQty" class="quantity-input" (input)="onQuantityChange($event, product)" (keydown)="onKeyDown($event, product)">
               
               <button (click)="increaseQuantity(product)" class="quantity-btn">+</button>
             </div>

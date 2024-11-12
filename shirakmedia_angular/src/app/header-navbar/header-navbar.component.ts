@@ -111,10 +111,11 @@ export class HeaderNavbarComponent {
     this.closeDrawer();
   }
 
-  async getAllProducts() {
+  async getProductById(productIds) {
 
     try {
-      let response = await this.backSVC.getAllProducts();
+
+      let response = await this.backSVC.getProductById(productIds);
 
       if (!response.Success) {
         this.backSVC.openAlertDialogMessage(response.Message);
@@ -122,6 +123,8 @@ export class HeaderNavbarComponent {
       }
 
       this.allProducts = response.Data;
+
+      this.calculateRoundedTotalPrice();
 
     } catch (error) {
       this.backSVC.openAlertDialogMessage(error.error.Message);
@@ -133,7 +136,8 @@ export class HeaderNavbarComponent {
     const cartProducts = JSON.parse(localStorage.getItem("cartProducts")) || [];
 
     if(this.openCartSideNav && cartProducts.length > 0){
-      await this.getAllProducts();
+      let allProductsId = this.cartProducts.map(item => item.id).join(',');
+      await this.getProductById(allProductsId);
     }
 
     this.cartProducts = cartProducts;
@@ -167,13 +171,23 @@ export class HeaderNavbarComponent {
     this.calculateRoundedTotalPrice();
   }
 
-calculateRoundedTotalPrice() {
+calculateRoundedTotalPricee() {
   const totalPrice = this.cartProducts.reduce((sum, item) => {
       const price = parseFloat(item.price);
       return sum + (isNaN(price) ? 0 : price); 
   }, 0);
 
   // Format the rounded total price in INR format
+  this.roundedTotalPrice = Math.round(totalPrice).toLocaleString('en-IN');
+}
+
+calculateRoundedTotalPrice() {
+  const totalPrice = this.cartProducts.reduce((sum, item) => {
+      const price:any = item.price * item.selectedQty || item.min_quantity;
+      const amount = parseFloat(price);
+      return sum + (isNaN(amount) ? 0 : amount); 
+  }, 0);
+
   this.roundedTotalPrice = Math.round(totalPrice).toLocaleString('en-IN');
 }
 
@@ -326,17 +340,21 @@ calculateRoundedTotalPrice() {
   decreaseQuantity(product:any) {
     if (product.selectedQty < product.min_quantity) {
       product.selectedQty = product.min_quantity;
+      this.calculateRoundedTotalPrice();
       return;
     }
     product.selectedQty --;
+
+    this.calculateRoundedTotalPrice();
   }
 
   increaseQuantity(product:any) {
     product.selectedQty ++;
+    this.calculateRoundedTotalPrice();
   }
 
+  // to handle input change
   onQuantityChange(event: Event, product:any): void {
-    console.log(event);
     const inputElement = event.target as HTMLInputElement;
     const newValue = inputElement.value;
 
@@ -351,6 +369,20 @@ calculateRoundedTotalPrice() {
     if (product.selectedQty < product.min_quantity) {
       product.selectedQty = product.min_quantity;
     }
+
+    this.calculateRoundedTotalPrice();
   }
+
+// handle keydown events and prevent deletion below min_quantity
+onKeyDown(event: KeyboardEvent, product: any): void {
+  const inputElement = event.target as HTMLInputElement;
+  const currentValue = inputElement.value;
+
+  if (parseInt(currentValue, 10) <= product.min_quantity) {
+    if (event.key === 'Backspace' || event.key === 'Delete') {
+      event.preventDefault(); 
+    }
+  }
+}
 
 }
