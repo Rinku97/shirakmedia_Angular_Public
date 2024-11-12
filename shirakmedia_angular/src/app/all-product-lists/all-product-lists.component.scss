@@ -106,7 +106,8 @@
   
   .product-card mat-card-actions {
     display: flex;
-    justify-content: space-between;
+    // justify-content: space-between;
+    justify-content: center;
   }
   
   .rating-container {

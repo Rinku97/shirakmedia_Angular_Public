@@ -250,10 +250,17 @@ calculateRoundedTotalPrice() {
     let encryptedId = this.config.encrypt(product.id.toString());
     let encodedString = encodeURIComponent(encryptedId);
 
-    const productInfo = [{ id:product.id, minQty: product.selectedQty, selectedColor: product.selectedColor, selectedSize: product.selectedSize }];
-    // sending additional details over the route to checkout page
+    // const productInfo = [{ id:product.id, minQty: product.selectedQty, selectedColor: product.selectedColor, selectedSize: product.selectedSize }];
+    // // sending additional details over the route to checkout page
+    // this.router.navigate([`checkout/${encodedString}`], {
+    //   state: { productDetails: productInfo }
+    // });
+
+    const minQty = product.selectedQty;
+    const totalAmount = minQty * product.price;
+    const productInfoObj = [{ id: product.id, minQty: minQty, selectedColor: product.selectedColor, selectedSize: product.selectedSize, price: product.price, title: product.product_name, totalAmount:totalAmount }];
     this.router.navigate([`checkout/${encodedString}`], {
-      state: { productDetails: productInfo }
+      state: { productDetails: productInfoObj }
     });
 
     // this.router.navigate([`checkout/${encodedString}`]);
@@ -270,7 +277,10 @@ calculateRoundedTotalPrice() {
         id:item.id, 
         minQty: item.selectedQty, 
         selectedColor: item.selectedColor, 
-        selectedSize: item.selectedSize 
+        selectedSize: item.selectedSize,
+        price:item.price,
+        title:item.product_name,
+        totalAmount: item.price * item.selectedQty
       });
     });
 

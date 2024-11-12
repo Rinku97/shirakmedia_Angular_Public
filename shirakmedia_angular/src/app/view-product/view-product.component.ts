@@ -192,7 +192,9 @@ export class ViewProductComponent {
     let encodedString = encodeURIComponent(encryptedId);
 
     // sending additional details over the route to checkout page
-    const productInfoObj = [{ id:product.id, minQty: this.quantityControl.value, selectedColor: this.selectedColor, selectedSize: this.selectedSize }];
+    const minQty = this.quantityControl.value;
+    const totalAmount = product.minQty * product.price;
+    const productInfoObj = [{ id: product.id, minQty: minQty, selectedColor: this.selectedColor, selectedSize: this.selectedSize, price: product.price, title: product.product_name, totalAmount:totalAmount }];
     this.router.navigate([`checkout/${encodedString}`], {
       state: { productDetails: productInfoObj }
     });

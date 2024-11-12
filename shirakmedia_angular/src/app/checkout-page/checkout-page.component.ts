@@ -163,10 +163,18 @@ export class CheckoutPageComponent {
 
   initiatePayment(): void {
     const amountInINR = this.products.length > 1 ? this.roundedTotalPrice : this.products[0].price; // Amount in INR
-    const amountInPaise = amountInINR * 100; // Convert INR to paise
+    const number = parseInt(amountInINR.replace(/,/g, ''), 10);
+    const amountInPaise = number * 100; 
 
     // Assuming delivery location is stored in this.checkoutForm
     const deliveryLocation = this.checkoutForm.get('deliveryLocation').value; // Get the delivery location
+    // Collect product details (title, price, color, quantity)
+  const productsInfo = this.productInfo.map(product => ({
+    product_Id: product.id,
+    color: product.selectedColor.name,
+    size: product.selectedSize.name,
+    quantity: product.minQty
+  }));
 
     const options = {
       key: 'rzp_test_cVVPrmC1vgnDAj', 
@@ -190,7 +198,8 @@ export class CheckoutPageComponent {
         ondismiss: this.onPaymentCancelled.bind(this) // Bind the context
       },
       notes: {
-        delivery_location: deliveryLocation // Add delivery location in notes
+        delivery_location: deliveryLocation,
+        productDetails: JSON.stringify(productsInfo)
       }
     };
 
@@ -204,13 +213,14 @@ export class CheckoutPageComponent {
      // Log order details including payment ID and user details
      const orderDetails = {
       orderId: response.razorpay_payment_id,
-      paymentId: response.razorpay_payment_id,
+      razorpay_payment_id: response.razorpay_payment_id,
       userDetails: {
         name: this.checkoutForm.get('firstName').value + ' ' + this.checkoutForm.get('lastName').value,
         email: this.checkoutForm.get('email').value,
         contact: this.checkoutForm.get('phoneNumber').value,
-        deliveryLocation: this.checkoutForm.get('deliveryLocation').value // Include delivery location
-      }
+        deliveryLocation: this.checkoutForm.get('deliveryLocation').value,
+      },
+      productDetails: this.productInfo
     };
 
     console.log('Order Details:', orderDetails);
