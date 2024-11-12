@@ -302,4 +302,20 @@ export class CheckoutPageComponent {
     return '₹' + Math.round(price).toLocaleString('en-IN');
   }
 
+  getSelectedColor(product:any){
+    if(product.selectedColor && product.selectedColor.name){
+      return product.selectedColor.name;
+    }else{
+      return product.color ? product.color[0].name : "";
+    }
+  }
+
+  getSelectedSize(product:any){
+    if(product.selectedSize && product.selectedSize.name){
+      return product.selectedSize.name;
+    }else{
+      return product.size ? product.size[0].name : "";
+    }
+  }
+
 }
