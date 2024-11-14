@@ -162,7 +162,7 @@ export class CheckoutPageComponent {
   }
 
   initiatePayment(): void {
-    const amountInINR = this.products.length > 1 ? this.roundedTotalPrice : this.products[0].price; // Amount in INR
+    const amountInINR = this.roundedTotalPrice // Amount in INR
     const number = parseInt(amountInINR.replace(/,/g, ''), 10);
     const amountInPaise = number * 100; 
 
