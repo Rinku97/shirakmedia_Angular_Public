@@ -319,11 +319,16 @@
   margin-right: 10px;
   border-radius: 50%;
   border: 2px solid #ddd;
+  transition: transform 0.2s ease-in-out;
 }
 
 .color-options div.selected {
   border:2px solid #607d8b; 
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.color-options div:hover {
+  transform: scale(1.1);
 }
 
 .size-options, .color-options {
@@ -340,12 +345,17 @@
   border-radius: 5px;
   cursor: pointer;
   font-size: 10px;
+  transition: transform 0.2s ease-in-out;
 }
 
 .size-options span.selected {
   background-color: #607d8b;
   color: white;
   border-color: #607d8b;
+}
+
+.size-options span:hover {
+  transform: scale(1.1);
 }
 
 
