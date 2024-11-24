@@ -26,9 +26,9 @@
             <img *ngFor="let color of selectedProduct.colors" [src]="color">
           </div> -->
           <div class="product-options">
-            <div class="colors" *ngIf="selectedProduct.color">
-              <h3>Color: {{selectedColor.name}}</h3>
-              <div class="color-options" style="display: flex;">
+            <div class="colors">
+              <h3 *ngIf="selectedProduct && selectedProduct.color">Color: {{selectedColor.name}}</h3>
+              <div class="color-options" style="display: flex;" *ngIf="selectedProduct && selectedProduct.color">
                 <!-- <img *ngFor="let color of selectedProduct.colors" [src]="color" alt="Color Option"> -->
                  <!-- <div *ngFor="let color of selectedProduct.color" style="width: 40px;height: 40px;border-radius: 10px;" [ngClass]="{'selected': color === selectedColor}"> -->
                   <div *ngFor="let color of selectedProduct.color" alt="Color Option"
@@ -37,7 +37,7 @@
                   </div>
                 <!-- </div> -->
               </div>
-              <div class="sizes" *ngIf="selectedProduct.size">
+              <div class="sizes" *ngIf="selectedProduct && selectedProduct.size">
                 <h3 style="margin: 16px 0px;">Size: {{selectedSize.name}}</h3>
                 <div class="size-options">
                   <span *ngFor="let size of selectedProduct.size" [ngClass]="{'selected': size === selectedSize}"
