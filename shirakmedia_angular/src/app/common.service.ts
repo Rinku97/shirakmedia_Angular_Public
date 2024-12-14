@@ -19,7 +19,8 @@ const httpOptions = {
 export class CommonService {
 
   // apiURL = "http://localhost:4300/api/";
-  apiURL = "http://127.0.0.1:5001/web-backend-33746/us-central1/app/api/";
+  // apiURL = "http://127.0.0.1:5001/web-backend-33746/us-central1/app/api/";
+  apiURL = "";
   
   private selectedOptionSubject = new BehaviorSubject<string>('Home');
   private addToCardCount = new BehaviorSubject<number>(0);
@@ -27,7 +28,7 @@ export class CommonService {
   countOfCartProducts = this.addToCardCount.asObservable();
 
   constructor(private http: HttpClient, private dialog:MatDialog, private configService: ConfigService, private router:Router, private ngZone: NgZone) {
-    // this.apiURL = this.configService.decrypt(this.configService.apiUrl);
+    this.apiURL = this.configService.decrypt(this.configService.apiUrl);
     const cartProducts = JSON.parse(localStorage.getItem("cartProducts")) || [];
     this.updateCartCount(cartProducts.length);
    }
