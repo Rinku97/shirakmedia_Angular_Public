@@ -19,7 +19,7 @@ const httpOptions = {
 export class CommonService {
 
   // apiURL = "http://localhost:4300/api/";
-  apiURL = "";
+  apiURL = "http://127.0.0.1:5001/web-backend-33746/us-central1/app/api/";
   
   private selectedOptionSubject = new BehaviorSubject<string>('Home');
   private addToCardCount = new BehaviorSubject<number>(0);
@@ -27,7 +27,7 @@ export class CommonService {
   countOfCartProducts = this.addToCardCount.asObservable();
 
   constructor(private http: HttpClient, private dialog:MatDialog, private configService: ConfigService, private router:Router, private ngZone: NgZone) {
-    this.apiURL = this.configService.decrypt(this.configService.apiUrl);
+    // this.apiURL = this.configService.decrypt(this.configService.apiUrl);
     const cartProducts = JSON.parse(localStorage.getItem("cartProducts")) || [];
     this.updateCartCount(cartProducts.length);
    }
@@ -174,6 +174,13 @@ export class CommonService {
   async addProductReviews(newReview): Promise<any> {
     let postObj = newReview;
     let url = this.apiURL + 'products/addProductReviews';
+    return await this.http.post<any>(url, postObj).toPromise();
+    
+  }
+
+  async saveOrderDetails(orderDetails): Promise<any> {
+    let postObj = orderDetails;
+    let url = this.apiURL + 'products/saveOrderDetails';
     return await this.http.post<any>(url, postObj).toPromise();
     
   }

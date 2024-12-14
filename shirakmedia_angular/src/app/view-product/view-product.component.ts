@@ -193,7 +193,8 @@ export class ViewProductComponent {
 
     // sending additional details over the route to checkout page
     const minQty = this.quantityControl.value;
-    const totalAmount = product.minQty * product.price;
+    const totalAmount = minQty * product.price;
+    // const totalAmount = product.minQty * product.price;
     const productInfoObj = [{ id: product.id, minQty: minQty, selectedColor: this.selectedColor, selectedSize: this.selectedSize, price: product.price, title: product.product_name, totalAmount:totalAmount }];
     this.router.navigate([`checkout/${encodedString}`], {
       state: { productDetails: productInfoObj }

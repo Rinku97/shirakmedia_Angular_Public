@@ -62,10 +62,10 @@ export class CheckoutPageComponent {
   productIds: any;
   roundedTotalPrice: any = 0;
 
-  productInfo:any[] = [];
+  productInfo: any[] = [];
 
   constructor(private fb: FormBuilder, private http: HttpClient,
-    private router: Router, private backSVC: CommonService, private config: ConfigService,private location: Location,
+    private router: Router, private backSVC: CommonService, private config: ConfigService, private location: Location,
     private dialog: MatDialog, private ActRoute: ActivatedRoute) {
     let productIds = this.ActRoute.snapshot.paramMap.get('ids');
     let decodedURI = decodeURIComponent(productIds);
@@ -97,8 +97,8 @@ export class CheckoutPageComponent {
 
       this.products = response.Data;
 
-      if(this.products.length > 0){
-        if(this.productInfo && this.productInfo.length > 0){
+      if (this.products.length > 0) {
+        if (this.productInfo && this.productInfo.length > 0) {
 
           this.products.forEach(item => {
             let product = this.productInfo.find(x => x.id == item.id);
@@ -120,9 +120,9 @@ export class CheckoutPageComponent {
 
   calculateRoundedTotalPrice() {
     const totalPrice = this.products.reduce((sum, item) => {
-        const price:any = item.price * item.min_quantity;
-        const amount = parseFloat(price);
-        return sum + (isNaN(amount) ? 0 : amount); 
+      const price: any = item.price * item.min_quantity;
+      const amount = parseFloat(price);
+      return sum + (isNaN(amount) ? 0 : amount);
     }, 0);
 
     this.roundedTotalPrice = Math.round(totalPrice).toLocaleString('en-IN');
@@ -148,7 +148,7 @@ export class CheckoutPageComponent {
   }
 
   onSubmit(): void {
-    if(this.products.length == 0){
+    if (this.products.length == 0) {
       this.backSVC.openAlertDialogMessage("You currently have no orders to check out. Please visit the product page to make a purchase.");
       this.checkoutForm.reset();
       this.formGroupDirective.resetForm();
@@ -164,21 +164,21 @@ export class CheckoutPageComponent {
   initiatePayment(): void {
     const amountInINR = this.roundedTotalPrice // Amount in INR
     const number = parseInt(amountInINR.replace(/,/g, ''), 10);
-    const amountInPaise = number * 100; 
+    const amountInPaise = number * 100;
 
     // Assuming delivery location is stored in this.checkoutForm
     const deliveryLocation = this.checkoutForm.get('deliveryLocation').value; // Get the delivery location
     // Collect product details (title, price, color, quantity)
-  const productsInfo = this.productInfo.map(product => ({
-    product_Id: product.id,
-    color: product.selectedColor.name,
-    size: product.selectedSize.name,
-    quantity: product.minQty
-  }));
+    const productsInfo = this.productInfo.map(product => ({
+      product_Id: product.id,
+      color: product.selectedColor ? product.selectedColor.name : "",
+      size: product.selectedSize ? product.selectedSize.name : "",
+      quantity: product.minQty
+    }));
 
     const options = {
-      key: 'rzp_test_cVVPrmC1vgnDAj', 
-      amount: amountInPaise, 
+      key: 'rzp_test_cVVPrmC1vgnDAj',
+      amount: amountInPaise,
       currency: 'INR',
       name: 'Shirak Media',
       description: 'Test Transaction',
@@ -205,15 +205,26 @@ export class CheckoutPageComponent {
 
     const paymentObject = new (window as any).Razorpay(options);
     paymentObject.open();
-}
+  }
 
 
   onPaymentSuccess(response: any): void {
-    console.log(response);
-     // Log order details including payment ID and user details
-     const orderDetails = {
-      orderId: response.razorpay_payment_id,
+    const today = new Date();
+    const localDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000);
+
+    const day = localDate.getDate().toString().padStart(2, '0');
+    const month = localDate.toLocaleString('en-GB', { month: 'short' });
+    const year = localDate.getFullYear();
+
+    const formatedDate = `${day}-${month}-${year}`;
+
+    const orderDetails = {
       razorpay_payment_id: response.razorpay_payment_id,
+      paymentStatus: "Paid",
+      deliveryStatus: "In Transit",
+      orderDate: formatedDate,
+      deliveryDate: "",
+      totalAmount: this.roundedTotalPrice,
       userDetails: {
         name: this.checkoutForm.get('firstName').value + ' ' + this.checkoutForm.get('lastName').value,
         email: this.checkoutForm.get('email').value,
@@ -233,10 +244,31 @@ export class CheckoutPageComponent {
     this.checkoutForm.reset();
     this.formGroupDirective.resetForm();
 
-    this.backSVC.openConfirmationDialogMessage(`
-      Your payment has been successfully processed, and your order is confirmed. Would you like to return to the home page?`,
-       null, true, true, false, false
-    );
+    this.backSVC.openAlertDialogMessage("Payment successful! Your order has been confirmed. Would you like to return to the home page?", null, true, true);
+
+    this.saveOrderDetails(orderDetails)
+
+  }
+
+  async saveOrderDetails(orderDetails) {
+
+    try {
+
+      let response = await this.backSVC.saveOrderDetails(orderDetails);
+
+      if (!response.Success) {
+        this.backSVC.openAlertDialogMessage(response.Message);
+        return;
+      }
+
+      // this.backSVC.openConfirmationDialogMessage(
+      //   response.Message,
+      //   null, true, true, false, false
+      // );
+
+    } catch (error) {
+      this.backSVC.openAlertDialogMessage(error.error.Message);
+    }
   }
 
   onPaymentCancelled(): void {
@@ -302,18 +334,18 @@ export class CheckoutPageComponent {
     return '₹' + Math.round(price).toLocaleString('en-IN');
   }
 
-  getSelectedColor(product:any){
-    if(product.selectedColor && product.selectedColor.name){
+  getSelectedColor(product: any) {
+    if (product.selectedColor && product.selectedColor.name) {
       return product.selectedColor.name;
-    }else{
+    } else {
       return product.color ? product.color[0].name : "";
     }
   }
 
-  getSelectedSize(product:any){
-    if(product.selectedSize && product.selectedSize.name){
+  getSelectedSize(product: any) {
+    if (product.selectedSize && product.selectedSize.name) {
       return product.selectedSize.name;
-    }else{
+    } else {
       return product.size ? product.size[0].name : "";
     }
   }

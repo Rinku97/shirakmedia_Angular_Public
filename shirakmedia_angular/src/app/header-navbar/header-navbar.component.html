@@ -78,7 +78,7 @@
               {{ star }}
             </mat-icon>
           </div>
-          <div class="colors" *ngIf="product.color">
+          <div class="colors">
             <h5 *ngIf="product && product.color">Color: {{product.selectedColor.name || product.color[0].name}}</h5>
             <!-- <h3>Color: {{product.selectedColor.name}}</h3> -->
             <div class="color-options" style="display: flex;" *ngIf="product && product.color">
