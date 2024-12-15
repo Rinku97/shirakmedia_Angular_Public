@@ -105,7 +105,7 @@ export class AllProductListsComponent {
         return;
       }
 
-      this.products = response.Data;
+      this.products = response.Data || [];
       this.filteredProducts = this.products;
       this.applyFilters(this.filterForm.value, '');
 

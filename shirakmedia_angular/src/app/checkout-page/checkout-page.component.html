@@ -59,7 +59,7 @@
           <th>Amount</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody *ngIf="products && productInfo">
         <tr *ngFor="let product of products">
           <td><img [src]="product.productImages[0].url" alt="Product Image" class="product-image" (mouseenter)="enlargeImage(product)">
           </td>
@@ -75,7 +75,7 @@
     </table>
   </div>
   <div class="total">
-    <h4 style="margin: 0;"> Subtotal ({{products.length}} items):₹{{roundedTotalPrice}}</h4>
+    <h4 style="margin: 0;"> Subtotal ({{ roundedTotalPrice <= 0 || !productInfo ? 0 : products.length}} items):₹{{ roundedTotalPrice <= 0 || !productInfo ? 0 : roundedTotalPrice}}</h4>
     <!-- <h3>Total: </h3>
         <h3>{{roundedTotalPrice}}</h3> -->
   </div>

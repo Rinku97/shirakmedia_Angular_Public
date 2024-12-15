@@ -64,11 +64,14 @@ export class CheckoutPageComponent {
 
   productInfo: any[] = [];
 
+  formatedDate: any;
+  paymentFailureOrCancelationId: any;
+
   constructor(private fb: FormBuilder, private http: HttpClient,
     private router: Router, private backSVC: CommonService, private config: ConfigService, private location: Location,
     private dialog: MatDialog, private ActRoute: ActivatedRoute) {
     let productIds = this.ActRoute.snapshot.paramMap.get('ids');
-    let decodedURI = decodeURIComponent(productIds);
+    let decodedURI = this.decodeFullyString(productIds);
     this.productIds = this.config.decrypt(decodedURI);
 
     const state = this.location.getState() as { productDetails: any };
@@ -80,7 +83,28 @@ export class CheckoutPageComponent {
     this.getProductById();
   }
 
+  decodeFullyString(encodedString: string): string {
+    let decodedString = encodedString;
+
+    // Keep decoding until no more '%25' (encoded %) are present
+    while (decodedString.includes('%')) {
+      decodedString = decodeURIComponent(decodedString);
+    }
+
+    return decodedString;
+  }
+
   ngOnInit(): void {
+    /**
+    const today = new Date();
+    const localDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000);
+
+    const day = localDate.getDate().toString().padStart(2, '0');
+    const month = localDate.toLocaleString('en-GB', { month: 'short' });
+    const year = localDate.getFullYear();
+
+    this.formatedDate = `${day}-${month}-${year}`;
+     */
     this.createFormControls();
   }
 
@@ -148,7 +172,7 @@ export class CheckoutPageComponent {
   }
 
   onSubmit(): void {
-    if (this.products.length == 0) {
+    if (this.products.length == 0 || this.roundedTotalPrice <= 0 || !this.productInfo) {
       this.backSVC.openAlertDialogMessage("You currently have no orders to check out. Please visit the product page to make a purchase.");
       this.checkoutForm.reset();
       this.formGroupDirective.resetForm();
@@ -162,29 +186,45 @@ export class CheckoutPageComponent {
   }
 
   initiatePayment(): void {
+
     const amountInINR = this.roundedTotalPrice // Amount in INR
     const number = parseInt(amountInINR.replace(/,/g, ''), 10);
     const amountInPaise = number * 100;
 
     // Assuming delivery location is stored in this.checkoutForm
-    const deliveryLocation = this.checkoutForm.get('deliveryLocation').value; // Get the delivery location
+    const deliveryLocation = this.checkoutForm.get('deliveryLocation').value;
+
+    this.paymentFailureOrCancelationId = this.generatePaymentId();
+
     // Collect product details (title, price, color, quantity)
     const productsInfo = this.productInfo.map(product => ({
-      product_Id: product.id,
+      id: product.id,
+      title: product.title,
+      price: product.price,
       color: product.selectedColor ? product.selectedColor.name : "",
       size: product.selectedSize ? product.selectedSize.name : "",
-      quantity: product.minQty
+      quantity: product.minQty,
+      totalAmount: product.totalAmount,
+
     }));
 
+    const userDetails = {
+      name: this.checkoutForm.get('firstName').value + ' ' + this.checkoutForm.get('lastName').value,
+      email: this.checkoutForm.get('email').value,
+      contact: this.checkoutForm.get('phoneNumber').value,
+      deliveryLocation: this.checkoutForm.get('deliveryLocation').value,
+    };
+
     const options = {
-      key: 'rzp_test_cVVPrmC1vgnDAj',
+      key: 'rzp_test_AjxHIELt1ugWHX',
       amount: amountInPaise,
       currency: 'INR',
       name: 'Shirak Media',
-      description: 'Test Transaction',
+      description: this.checkoutForm.get('additionalInfo').value,
       image: 'assets/Images/shirakMediaLogo.jpeg',
       handler: (response) => {
-        this.onPaymentSuccess(response);
+        this.paymentFailureOrCancelationId = response.razorpay_payment_id;
+        this.onPaymentSuccess(response, productsInfo, userDetails);
       }, // Bind the context
       prefill: {
         name: this.checkoutForm.get('firstName').value + ' ' + this.checkoutForm.get('lastName').value,
@@ -195,11 +235,19 @@ export class CheckoutPageComponent {
         color: '#3399cc'
       },
       modal: {
-        ondismiss: this.onPaymentCancelled.bind(this) // Bind the context
+        // ondismiss: this.onPaymentCancelled.bind(this, productsInfo, userDetails) // Bind the context
+        ondismiss: () => {
+          // Handle payment cancellation, passing the custom message or ID
+          this.onPaymentCancelled(productsInfo, userDetails);
+        }
       },
       notes: {
         delivery_location: deliveryLocation,
-        productDetails: JSON.stringify(productsInfo)
+        productDetails: JSON.stringify(productsInfo),
+        paymentId: this.paymentFailureOrCancelationId
+      },
+      onFailure: (error) => {
+        this.onPaymentFailure(error, productsInfo, userDetails);
       }
     };
 
@@ -208,33 +256,19 @@ export class CheckoutPageComponent {
   }
 
 
-  onPaymentSuccess(response: any): void {
-    const today = new Date();
-    const localDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000);
-
-    const day = localDate.getDate().toString().padStart(2, '0');
-    const month = localDate.toLocaleString('en-GB', { month: 'short' });
-    const year = localDate.getFullYear();
-
-    const formatedDate = `${day}-${month}-${year}`;
+  onPaymentSuccess(response: any, productInfo: any, userDetails): void {
 
     const orderDetails = {
       razorpay_payment_id: response.razorpay_payment_id,
       paymentStatus: "Paid",
       deliveryStatus: "In Transit",
-      orderDate: formatedDate,
-      deliveryDate: "",
+      // orderDate: this.formatedDate,
+      orderDate: new Date(),
+      deliveryDate: "Expected Soon",
       totalAmount: this.roundedTotalPrice,
-      userDetails: {
-        name: this.checkoutForm.get('firstName').value + ' ' + this.checkoutForm.get('lastName').value,
-        email: this.checkoutForm.get('email').value,
-        contact: this.checkoutForm.get('phoneNumber').value,
-        deliveryLocation: this.checkoutForm.get('deliveryLocation').value,
-      },
-      productDetails: this.productInfo
+      userDetails: userDetails,
+      productDetails: productInfo
     };
-
-    console.log('Order Details:', orderDetails);
 
     this.removeFromCart();
     this.products = [];
@@ -244,9 +278,9 @@ export class CheckoutPageComponent {
     this.checkoutForm.reset();
     this.formGroupDirective.resetForm();
 
-    this.backSVC.openAlertDialogMessage("Payment successful! Your order has been confirmed. Would you like to return to the home page?", null, true, true);
+    this.backSVC.openAlertDialogMessage(`Payment successful. Your order has been confirmed!`, null, true, true);
 
-    this.saveOrderDetails(orderDetails)
+    this.saveOrderDetails(orderDetails);
 
   }
 
@@ -261,21 +295,50 @@ export class CheckoutPageComponent {
         return;
       }
 
-      // this.backSVC.openConfirmationDialogMessage(
-      //   response.Message,
-      //   null, true, true, false, false
-      // );
-
     } catch (error) {
       this.backSVC.openAlertDialogMessage(error.error.Message);
     }
   }
 
-  onPaymentCancelled(): void {
-    this.backSVC.openAlertDialogMessage(`Your payment has been canceled. Please try again later.`, null, true, false, false);
+  generatePaymentId(): string {
+    return 'PAY_' + Math.random().toString(36).substring(2, 10).toUpperCase();
   }
 
-  onPaymentFailure(error: any): void {
+  onPaymentCancelled(productInfo: any, userDetails): void {
+
+    // this.backSVC.openAlertDialogMessage(`Your payment has been canceled. Please try again later.`, null, true, false, false);
+    const message = 'Your payment is canceled. Please try again later.';
+    this.backSVC.openAlertDialogMessage(message, null, true, false, false);
+
+    const orderDetails = {
+      razorpay_payment_id: this.paymentFailureOrCancelationId,
+      paymentStatus: "Failed",
+      deliveryStatus: "Cancelled",
+      // orderDate: this.formatedDate,
+      orderDate: new Date(),
+      deliveryDate: "Not Applicable",
+      totalAmount: this.roundedTotalPrice,
+      userDetails: userDetails,
+      productDetails: productInfo
+    };
+
+    this.saveOrderDetails(orderDetails);
+  }
+
+  onPaymentFailure(error: any, productInfo: any, userDetails: any): void {
+    const orderDetails = {
+      razorpay_payment_id: this.paymentFailureOrCancelationId,
+      paymentStatus: "Failed",
+      deliveryStatus: "Cancelled",
+      // orderDate: this.formatedDate,
+      orderDate: new Date(),
+      deliveryDate: "Not Applicable",
+      totalAmount: this.roundedTotalPrice,
+      userDetails: userDetails,
+      productDetails: productInfo
+    };
+
+    this.saveOrderDetails(orderDetails);
     this.backSVC.openAlertDialogMessage(`Payment failed:${error}`, null, true, false, false);
   }
 
