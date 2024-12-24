@@ -7,6 +7,7 @@ import { ShowLargeImageComponent } from '../popup/show-large-image/show-large-im
 import { MatDialog } from '@angular/material/dialog';
 import { ConfigService } from '../config.service';
 import { Location } from '@angular/common';
+import { MatSnackBar, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-checkout-page',
@@ -69,7 +70,7 @@ export class CheckoutPageComponent {
 
   constructor(private fb: FormBuilder, private http: HttpClient,
     private router: Router, private backSVC: CommonService, private config: ConfigService, private location: Location,
-    private dialog: MatDialog, private ActRoute: ActivatedRoute) {
+    private dialog: MatDialog, private ActRoute: ActivatedRoute, private _snackBar: MatSnackBar) {
     let productIds = this.ActRoute.snapshot.paramMap.get('ids');
     let decodedURI = this.decodeFullyString(productIds);
     this.productIds = this.config.decrypt(decodedURI);
@@ -255,6 +256,12 @@ export class CheckoutPageComponent {
     paymentObject.open();
   }
 
+  verticalPosition: MatSnackBarVerticalPosition = 'bottom';
+  openSnackBar(message: string, action: string) {
+    this._snackBar.open(message, action, {
+      verticalPosition: this.verticalPosition,
+    });
+  }
 
   onPaymentSuccess(response: any, productInfo: any, userDetails): void {
 
@@ -280,7 +287,9 @@ export class CheckoutPageComponent {
 
     this.backSVC.openAlertDialogMessage(`Payment successful. Your order has been confirmed!`, null, true, true);
 
-    this.saveOrderDetails(orderDetails);
+    setTimeout(() => {
+      this.saveOrderDetails(orderDetails);
+    }, 500);
 
   }
 
@@ -310,6 +319,8 @@ export class CheckoutPageComponent {
     const message = 'Your payment is canceled. Please try again later.';
     this.backSVC.openAlertDialogMessage(message, null, true, false, false);
 
+    // this.openSnackBar(message, 'Okay');
+
     const orderDetails = {
       razorpay_payment_id: this.paymentFailureOrCancelationId,
       paymentStatus: "Failed",
@@ -322,7 +333,9 @@ export class CheckoutPageComponent {
       productDetails: productInfo
     };
 
-    this.saveOrderDetails(orderDetails);
+    setTimeout( async () => {
+      await this.saveOrderDetails(orderDetails);
+    }, 500);
   }
 
   onPaymentFailure(error: any, productInfo: any, userDetails: any): void {
@@ -338,8 +351,10 @@ export class CheckoutPageComponent {
       productDetails: productInfo
     };
 
-    this.saveOrderDetails(orderDetails);
     this.backSVC.openAlertDialogMessage(`Payment failed:${error}`, null, true, false, false);
+    setTimeout(() => {
+      this.saveOrderDetails(orderDetails);
+    }, 500);
   }
 
   onProductTitleClick(product: any) {
