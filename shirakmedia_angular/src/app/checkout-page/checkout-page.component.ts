@@ -153,7 +153,6 @@ export class CheckoutPageComponent {
     this.roundedTotalPrice = Math.round(totalPrice).toLocaleString('en-IN');
   }
 
-
   createFormControls(): void {
     const controls = {};
     this.formFields.forEach(field => {
@@ -186,6 +185,7 @@ export class CheckoutPageComponent {
     }
   }
 
+  /** intitiating payment and redirecting to razorpay payment interface. */
   initiatePayment(): void {
 
     const amountInINR = this.roundedTotalPrice // Amount in INR
