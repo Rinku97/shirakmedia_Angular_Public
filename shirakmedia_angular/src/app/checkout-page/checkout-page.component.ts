@@ -18,6 +18,8 @@ export class CheckoutPageComponent {
 
   @ViewChild('formGroupDirective') formGroupDirective: FormGroupDirective;
 
+  verticalPosition: MatSnackBarVerticalPosition = 'bottom';
+
   checkoutForm: FormGroup;
   formFields: any[] = [
     {
@@ -256,7 +258,6 @@ export class CheckoutPageComponent {
     paymentObject.open();
   }
 
-  verticalPosition: MatSnackBarVerticalPosition = 'bottom';
   openSnackBar(message: string, action: string) {
     this._snackBar.open(message, action, {
       verticalPosition: this.verticalPosition,
