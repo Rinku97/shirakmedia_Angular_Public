@@ -258,6 +258,7 @@ export class CheckoutPageComponent {
     paymentObject.open();
   }
 
+  /** snackbar used to show the message */
   openSnackBar(message: string, action: string) {
     this._snackBar.open(message, action, {
       verticalPosition: this.verticalPosition,
